@@ -1,4 +1,47 @@
-/* Trang đăng xuất có thể đơn giản, chỉ cần hiệu ứng nhỏ */
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+  background-color: #69747e;
+}
+
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
 .logout-message {
   text-align: center;
   font-size: 1.5rem;

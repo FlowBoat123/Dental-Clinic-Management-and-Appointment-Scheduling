@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     logoutButton.addEventListener("click", function (e) {
       e.preventDefault(); // Ngăn hành động mặc định của liên kết
       // Chuyển hướng sang trang đăng nhập
-      window.location.href = "login.html";
+      window.location.href = "/shared/login.html";
     });
   }
 });

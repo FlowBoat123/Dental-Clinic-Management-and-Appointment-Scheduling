@@ -1,0 +1,118 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #007bff; /* Màu chính đồng nhất */
+  padding: 20px;
+  height: 100vh;
+  color: white;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.sidebar ul li:hover {
+  background: rgba(255, 255, 255, 0.2); /* Màu phụ đồng nhất khi hover */
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  width: 100%;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+h1 {
+  color: #333; /* Màu chính cho tiêu đề */
+  text-align: center;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background: #007bff; /* Màu chính đồng nhất */
+  color: white;
+}
+
+td {
+  background: #f9f9f9;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+}
+
+/* Button Styles */
+.delete {
+  color: red;
+}
+
+.edit {
+  color: #333;
+}
+
+/* Add Account Button */
+.add-account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #007bff; /* Màu chính đồng nhất */
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+
+.add-account:hover {
+  background: #0056b3;
+}

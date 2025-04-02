@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Page</title>
     <!-- Link tới file CSS -->
-    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="/shared/login.css" />
   </head>
   <body>
     <div class="login-container">
@@ -24,6 +24,16 @@
       <div class="right-container">
         <div class="form-wrapper">
           <h2>Đăng Nhập</h2>
+
+          <!-- Nút chuyển đổi giữa Bác sĩ và Admin -->
+          <div class="toggle-container">
+            <span>Đăng nhập với tư cách:</span>
+            <label class="switch">
+              <input type="checkbox" id="roleToggle" />
+              <span class="slider round"></span>
+            </label>
+            <span id="loginRole">Bác sĩ</span>
+          </div>
 
           <!-- Nút đăng nhập với Google (chưa tích hợp thật, chỉ là giao diện) -->
           <button class="google-button">
@@ -81,7 +91,7 @@
       </div>
     </div>
 
-    <!-- Link tới file JS (nếu có) -->
-    <script src="../javascript/login.js"></script>
+    <!-- Link tới file JS -->
+    <script src="/shared/login.js"></script>
   </body>
 </html>

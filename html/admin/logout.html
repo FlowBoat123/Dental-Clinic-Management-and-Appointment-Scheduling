@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý bác sĩ - Đăng xuất</title>
+    <link rel="stylesheet" href="/css/admin/logout.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>ADMIN</h2>
+      <ul>
+        <li><a href="home.html">&#127968; Trang chủ</a></li>
+        <li><a href="doctor-management.html">&#128100; Quản lý bác sĩ</a></li>
+        <li><a href="settings.html">&#9881; Cài đặt</a></li>
+        <li><a href="logout.html">&#128274; Đăng xuất</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <div class="logout-box">
+        <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+        <div class="buttons">
+          <button class="btn confirm" onclick="confirmLogout()">
+            Đăng xuất
+          </button>
+          <button class="btn cancel" onclick="cancelLogout()">Hủy</button>
+        </div>
+      </div>
+    </div>
+    <script src="/javascript/admin/logout.js"></script>
+  </body>
+</html>

@@ -668,3 +668,34 @@ footer {
 .close-success:hover {
   color: #ffdddd;
 }
+
+/* Nút mic trong phần đặt lịch */
+.voice-booking-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.voice-booking-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.voice-booking-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.voice-booking-btn .mic-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}

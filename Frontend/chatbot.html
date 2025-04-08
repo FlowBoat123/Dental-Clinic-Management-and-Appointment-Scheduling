@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <link rel="stylesheet" href="./bot.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <a href="index.html">Phòng khám Nha Khoa <br />An Khánh</a>
+      </div>
+      <div class="header-right">
+        <nav>
+          <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="about.html">Về chúng tôi</a></li>
+            <li><a href="services.html">Dịch vụ khám</a></li>
+            <li><a href="doctor.html">Bác sĩ</a></li>
+            <li>
+              <a href="schedule.html">
+                <button class="booking-btn">Đặt lịch ngay</button>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="chat-container">
+        <div id="chatbox" class="chatbox"></div>
+        <div id="mic-container" class="mic">
+            <i id="mic-icon" class="mic-icon">🎤</i>
+            <span id="stop-icon" class="stop-icon">⏹️</span>
+        </div>
+    </div>
+
+    <!-- Dialogflow Messenger -->
+    <df-messenger
+      intent="WELCOME"
+      chat-title="Trợ Lý Đặt Lịch"
+      agent-id="68444991-08e7-47f3-8ad2-bd89bdc3863f"
+      language-code="vi">
+    </df-messenger>
+
+    <script src="./bot.js"></script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+</body>
+</html>

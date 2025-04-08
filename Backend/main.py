@@ -226,7 +226,7 @@ def handle_make_appointment(req):
     # 🔥 **Kiểm tra xem khung giờ đó đã có ai đặt chưa**
     try:
         appointments_ref = db.collection("appointments")
-        query = appointments_ref.where("date", "==", date_str).where("hour", "==", hour_str).get()
+        query = appointments_ref.where("date", "==", date_str).where("time", "==", hour_str).get()
 
         if query:
             return {"fulfillmentText": f"⚠️ Giờ {hour_str} ngày {date_str} đã có người đặt lịch. Vui lòng chọn khung giờ khác."}
@@ -351,11 +351,15 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()  # Kết nối Firestore
 
 def save_user_to_db(session_id, user_data):
-    """Lưu toàn bộ thông tin đặt lịch vào Firestore"""
+    """Cập nhật thông tin đặt lịch vào Firestore nếu tài liệu đã tồn tại"""
     try:
         doc_ref = db.collection("appointments").document(session_id)
-        doc_ref.set(user_data)  # Ghi đè dữ liệu nếu session_id đã tồn tại
-        logging.info(f"✅ Dữ liệu đã được lưu vào Firestore: {user_data}")
+        if doc_ref.get().exists:  # Kiểm tra xem tài liệu đã tồn tại chưa
+            doc_ref.update(user_data)
+            logging.info(f"✅ Dữ liệu đã được cập nhật vào Firestore: {user_data}")
+        else:
+            logging.warning(f"⚠️ Tài liệu không tồn tại, tạo mới với session_id: {session_id}")
+            doc_ref.set(user_data)  # Nếu không tồn tại, tạo mới tài liệu
     except Exception as e:
         logging.error(f"❌ Lỗi khi lưu dữ liệu vào Firestore: {e}")
 

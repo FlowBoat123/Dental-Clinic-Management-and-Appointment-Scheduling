@@ -6,9 +6,10 @@ body {
   background-color: #f9f9f9;
 }
 
+/* Sidebar */
 .sidebar {
   width: 220px;
-  background: #007bff;
+  background: #126DA6; /* Màu xanh navy đậm */
   padding: 20px;
   height: 100vh;
   color: white;
@@ -18,32 +19,44 @@ body {
   text-align: center;
   margin-bottom: 30px;
   font-size: 24px;
-  color: #ecf0f1;
+  color: #ffffff;
 }
 
 .sidebar ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .sidebar ul li {
-  padding: 12px;
+  padding: 12px 15px;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: 6px;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .sidebar ul li:hover {
-  background-color: #34495e;
+  background-color: #1976D2; /* Màu xanh sáng khi hover */
+}
+
+.sidebar ul li.active {
+  background-color: #2A95BF; /* Màu xanh sáng hơn cho mục đang chọn */
+}
+
+.sidebar ul li i {
+  font-size: 18px;
+  color: white;
 }
 
 .sidebar ul li a {
-  color: #ecf0f1;
+  color: #ffffff;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
+  flex-grow: 1;
 }
 
 .content {
@@ -56,7 +69,7 @@ body {
 }
 
 h1 {
-  color: #2c3e50;
+  color: #333;;
   font-size: 28px;
   margin-bottom: 20px;
 }

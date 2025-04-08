@@ -7,7 +7,7 @@ body {
 /* Sidebar */
 .sidebar {
   width: 220px;
-  background: #007bff; /* Màu chính đồng nhất */
+  background: #126DA6;
   padding: 20px;
   height: 100vh;
   color: white;
@@ -15,7 +15,8 @@ body {
 
 .sidebar h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  font-size: 24px;
 }
 
 .sidebar ul {
@@ -24,23 +25,34 @@ body {
 }
 
 .sidebar ul li {
-  padding: 12px;
+  padding: 12px 15px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s;
 }
 
 .sidebar ul li:hover {
-  background: rgba(255, 255, 255, 0.2); /* Màu phụ đồng nhất khi hover */
+  background-color: #1976D2;
+}
+
+.sidebar ul li.active {
+  background-color: #2A95BF;
+}
+
+.sidebar ul li i {
+  font-size: 18px;
+  color: white;
 }
 
 .sidebar ul li a {
   color: white;
   text-decoration: none;
-  width: 100%;
+  font-size: 16px;
+  flex-grow: 1;
 }
 
 /* Content */
@@ -50,7 +62,7 @@ body {
 }
 
 h1 {
-  color: #333; /* Màu chính cho tiêu đề */
+  color: #333;
   text-align: center;
 }
 
@@ -69,7 +81,7 @@ td {
 }
 
 th {
-  background: #007bff; /* Màu chính đồng nhất */
+  background: #2A95BF;
   color: white;
 }
 
@@ -89,21 +101,23 @@ td {
   transform: scale(1.1);
 }
 
-/* Button Styles */
-.delete {
-  color: red;
-}
-
 .edit {
   color: #333;
 }
 
-/* Add Account Button */
+.save {
+  color: #2e7d32;
+}
+
+.delete {
+  color: red;
+}
+
 .add-account {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #007bff; /* Màu chính đồng nhất */
+  background: #73C6D9;
   color: white;
   font-size: 16px;
   padding: 10px;

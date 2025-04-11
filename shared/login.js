@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // Nếu chọn admin -> chuyển đến /admin/home.html
       // Nếu chọn doctor -> chuyển đến /doctor/index.html
       if (selectedRole === "admin") {
-        window.location.href = "/html/admin/home.html";
+        window.location.href = "../../html/admin/home.html";
       } else {
-        window.location.href = "/html/doctor/index.html";
+        window.location.href = "../../html/doctor/index.html";
       }
     });
   }

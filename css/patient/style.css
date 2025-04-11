@@ -51,7 +51,8 @@ header {
 nav ul {
   list-style: none;
   display: flex;
-  gap: 30px; /* Tạo khoảng cách giữa các mục menu */
+  align-items: center;
+  gap: 30px;
   padding: 0;
   margin: 0;
   position: relative;
@@ -155,6 +156,7 @@ p {
   padding: 40px 0;
   scroll-margin-top: 50px;
   height: 100vh;
+  margin-top: 50px;
 }
 
 /* Tiêu đề "Về chúng tôi" */
@@ -258,6 +260,7 @@ p {
   padding: 20px;
   scroll-margin-top: 70px;
   height: 100vh;
+  margin-top: 100px;
 }
 
 /* Tiêu đề chính */
@@ -313,6 +316,7 @@ p {
   text-align: center;
   scroll-margin-top: 60px;
   height: 65vh;
+  margin-top: 70px;
 }
 
 .services-section h2 {

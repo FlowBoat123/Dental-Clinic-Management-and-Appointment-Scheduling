@@ -76,10 +76,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const date = new Date(days[col]);
 
       // Ensure date is valid before proceeding
-      if (isNaN(date.getTime())) {
-        console.warn("Invalid date object:", date);
-        return;
-      }
+      // if (isNaN(date.getTime())) {
+      //   console.warn("Invalid date object:", date);
+      //   return;
+      // }
 
       const [hourStr, minuteStr] = time.split(":");
       const hour = parseInt(hourStr);
@@ -95,10 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
       date.setMinutes(minute);
 
       // Check if date is valid after setting the time
-      if (isNaN(date.getTime())) {
-        console.warn("Date is invalid after setting time:", date);
-        return;
-      }
+      // if (isNaN(date.getTime())) {
+      //   console.warn("Date is invalid after setting time:", date);
+      //   return;
+      // }
 
       const isoDate = date.toISOString().slice(0, 10); // yyyy-mm-dd
       slot.setAttribute("data-date", isoDate);
@@ -110,20 +110,21 @@ document.addEventListener("DOMContentLoaded", function () {
     appointments.forEach((appointment) => {
       const date = appointment.date; // yyyy-mm-dd (from Firestore)
       const time = appointment.time; // hh:mm
-
+    
       // Convert string date into Date object
       const appointmentDate = parseFirebaseDate(date);  // Use parseFirebaseDate function
-
+    
       // Ensure valid date object
       if (isNaN(appointmentDate)) {
         console.warn("Invalid appointment date:", date);
         return;
       }
-
+    
       // Find slot by date and time
       const slot = document.querySelector(`.time-slot[data-date="${date}"][data-time="${time}"]`);
       if (slot) {
-        slot.classList.add("booked");
+        // Thêm class `has-appointment` thay vì `booked`
+        slot.classList.add("has-appointment");
         slot.setAttribute("data-booked", "true");
         slot.innerHTML = `
           <span class="appointment-details">
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </span>`;
       }
     });
-
+    
     // Add click event to open modal
     slots.forEach(slot => {
       slot.addEventListener("click", function () {

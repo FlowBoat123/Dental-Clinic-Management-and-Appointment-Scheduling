@@ -66,54 +66,55 @@
           <input type="file" id="avatarInput" accept="image/*" />
         </div>
 
-        <!-- 1️⃣ Thông tin cá nhân -->
+        <!-- Thông tin cá nhân -->
         <fieldset>
           <legend>Thông tin cá nhân</legend>
+          
           <label for="fullname">Họ và tên:</label>
           <input type="text" id="fullname" name="fullname" required />
+          <span class="error-message" id="error-fullname"></span>
 
           <label for="dob">Ngày sinh:</label>
           <input type="date" id="dob" name="dob" required />
+          <span class="error-message" id="error-dob"></span>
 
           <label for="email">Email:</label>
           <input type="email" id="email" name="email" required />
+          <span class="error-message" id="error-email"></span>
 
           <label for="phone">Số điện thoại:</label>
           <input type="tel" id="phone" name="phone" required />
-
-          <label for="certificates">Bằng cấp / Chứng chỉ hành nghề:</label>
-          <textarea id="certificates" name="certificates" rows="3"></textarea>
+          <span class="error-message" id="error-phone"></span>
         </fieldset>
 
-        <!-- 2️⃣ Đổi mật khẩu -->
+        <!-- Đổi mật khẩu -->
         <fieldset>
-          <legend>Đổi mật khẩu</legend>
-          <label for="current-password">Mật khẩu hiện tại:</label>
-          <input
-            type="password"
-            id="current-password"
-            name="current-password"
-            required
-          />
+          <legend class="legend-with-checkbox">
+            Đổi mật khẩu 
+            <input 
+              type="checkbox" 
+              id="toggle-change-password" 
+              name="toggle-change-password" 
+              class="change-password-toggle" />
+          </legend>
+          
+          <!-- Phần đổi mật khẩu ẩn -->
+          <div id="password-fields" style="display: none;">
+            <label for="current-password">Mật khẩu hiện tại:</label>
+            <input type="password" id="current-password" name="current-password" />
+            <span class="error-message" id="error-current-password"></span>
 
-          <label for="new-password">Mật khẩu mới:</label>
-          <input
-            type="password"
-            id="new-password"
-            name="new-password"
-            required
-          />
+            <label for="new-password">Mật khẩu mới:</label>
+            <input type="password" id="new-password" name="new-password" />
+            <span class="error-message" id="error-new-password"></span>
 
-          <label for="confirm-password">Xác nhận mật khẩu mới:</label>
-          <input
-            type="password"
-            id="confirm-password"
-            name="confirm-password"
-            required
-          />
+            <label for="confirm-password">Xác nhận mật khẩu mới:</label>
+            <input type="password" id="confirm-password" name="confirm-password" />
+            <span class="error-message" id="error-confirm-password"></span>
+          </div>
         </fieldset>
 
-        <!-- 3️⃣ Nút thao tác -->
+        <!-- Nút thao tác -->
         <div class="button-group">
           <button type="submit" class="save-btn">Lưu thông tin</button>
           <button type="reset" class="cancel-btn">Hủy</button>

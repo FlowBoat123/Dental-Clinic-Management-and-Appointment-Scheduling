@@ -1,0 +1,137 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  margin: 0;
+  background-color: #f9f9f9;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #126DA6;
+  padding: 20px;
+  height: 100vh;
+  color: white;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar ul li:hover {
+  background-color: #1976D2;
+}
+
+.sidebar ul li.active {
+  background-color: #2A95BF;
+}
+
+.sidebar ul li i {
+  font-size: 18px;
+  color: white;
+}
+
+.sidebar ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+/* Main content */
+.content {
+  flex: 1;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Form Title */
+h1 {
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 24px;
+}
+
+h1 i {
+  margin-right: 8px;
+  color: #0D47A1;
+}
+
+/* Form Styling */
+.account-form {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 96%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.form-group input:disabled {
+  background-color: #f2f2f2;
+}
+
+button.btn {
+  background-color: #2A95BF;
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+button.btn:hover {
+  background-color: #2980b9;
+}
+
+button.btn:active {
+  background-color: #1c5a80;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Bác Sĩ - Cài Đặt</title>
+    <link rel="stylesheet" href="../../css/admin/settings.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>ADMIN</h2>
+      <ul>
+        <li><i class="fas fa-home"></i><a href="home.html">Trang chủ</a></li>
+        <li>
+          <i class="fas fa-user-md"></i
+          ><a href="doctor-management.html">Quản lý bác sĩ</a>
+        </li>
+        <li class="active">
+          <i class="fas fa-cog"></i><a href="settings.html">Cài đặt</a>
+        </li>
+        <li>
+          <i class="fas fa-sign-out-alt"></i><a href="logout.html">Đăng xuất</a>
+        </li>
+      </ul>
+    </div>
+    <div class="content">
+      <div class="settings-container">
+        <h1><i class="fas fa-user-cog"></i> Chỉnh Sửa Thông Tin Tài Khoản</h1>
+        <form id="accountForm" class="account-form">
+          <div class="form-group">
+            <label for="username">Tên đăng nhập</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value="admin"
+              disabled
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="admin@example.com"
+            />
+          </div>
+          <div class="form-group">
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <input
+              type="password"
+              id="currentPassword"
+              name="currentPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Mật khẩu mới</label>
+            <input type="password" id="newPassword" name="newPassword" />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+            />
+          </div>
+          <button type="submit" class="btn save">Lưu Thay Đổi</button>
+        </form>
+      </div>
+    </div>
+    <script src="../../javascript/admin/settings.js"></script>
+  </body>
+</html>

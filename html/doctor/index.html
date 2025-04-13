@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang chủ - Quản lý lịch</title>
+    <link rel="stylesheet" href="../../css/doctor/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <h2>Quản lý lịch</h2>
+        <ul>
+          <li>
+            <a href="index.html" class="active">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png"
+                alt="Home Icon"
+                class="sidebar-icon"
+              />
+              Trang chủ
+            </a>
+          </li>
+          <li>
+            <a href="schedule.html">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/747/747310.png"
+                alt="Schedule Icon"
+                class="sidebar-icon"
+              />
+              Lịch làm việc
+            </a>
+          </li>
+          <li>
+            <a href="settings.html">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/126/126472.png"
+                alt="Settings Icon"
+                class="sidebar-icon"
+              />
+              Cài đặt
+            </a>
+          </li>
+          <li>
+            <a href="logout.html">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png"
+                alt="Logout Icon"
+                class="sidebar-icon"
+              />
+              Đăng xuất
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main content -->
+      <div class="main-content">
+        <!-- Thông tin bác sĩ -->
+        <div class="doctor-info">
+          <h1>Chào mừng, Bác sĩ <span id="doctor-name">Nguyễn Văn A</span>!</h1>
+          <div class="personal-info">
+            <p>
+              <strong>Tên:</strong>
+              <span id="doctor-name">Nguyễn Văn A</span> <!-- Sửa lại tên bác sĩ -->
+            </p>
+            <p><strong>Số điện thoại:</strong> <span id="doctor-phone">45</span></p> <!-- Sửa lại tuổi -->
+            <p><strong>Chuyên khoa:</strong> <span id="doctor-specialty">Nội khoa</span></p> <!-- Sửa lại chuyên khoa -->
+            <p><strong>Ngày sinh:</strong> <span id="doctor-birthdate">02-02-2005</span></p> <!-- Ngày sinh -->
+          </div>
+        </div>
+
+        <!-- Lịch khám hôm nay -->
+        <div class="appointments">
+          <h2>Lịch khám hôm nay</h2>
+          <ul id="appointment-list">
+            <!-- Các lịch khám sẽ được render tự động ở đây -->
+          </ul>
+        </div>
+
+        <!-- Modal hiển thị chi tiết bệnh nhân -->
+        <div class="modal" id="patientModal">
+          <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Thông tin bệnh nhân</h3>
+            <p><strong>Họ tên:</strong> <span id="modalName"></span></p>
+            <p><strong>Giờ khám:</strong> <span id="modalTime"></span></p>
+            <p><strong>Dịch vụ:</strong> <span id="modalService"></span></p>
+            <p><strong>Ghi chú:</strong> <span id="modalNote"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../../javascript/doctor/index.js"></script>
+  </body>
+</html>

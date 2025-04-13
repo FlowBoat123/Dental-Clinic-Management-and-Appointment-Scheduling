@@ -51,7 +51,7 @@ body {
 
 /* Highlight slots with appointments */
 .time-slot.has-appointment {
-  background-color: #76d7c4;
+  background-color: #fdd835; /* Màu vàng */
   color: white;
 }
 /* ================= SIDEBAR ================= */

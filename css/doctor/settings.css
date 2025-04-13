@@ -1,3 +1,4 @@
+
 /* ================= RESET & CHUNG ================= */
 * {
   margin: 0;
@@ -8,13 +9,13 @@
 
 body {
   background: #f2f2f2;
-  display: flex; /* Giữ sidebar bên trái, nội dung bên phải */
+  display: flex;
 }
 
 /* ================= SIDEBAR (CỐ ĐỊNH BÊN TRÁI) ================= */
 .sidebar {
   width: 250px;
-  height: 100vh; /* Kéo dài sidebar hết chiều cao */
+  height: 100vh;
   background-color: #126DA6;
   color: white;
   padding: 20px;
@@ -46,7 +47,7 @@ body {
   color: white;
   padding: 10px;
   display: flex;
-  align-items: center; /* Căn giữa icon và chữ */
+  align-items: center;
   border-radius: 5px;
   transition: background 0.3s;
 }
@@ -64,12 +65,12 @@ body {
 
 /* ================= CĂN GIỮA FORM ================= */
 .main-content {
-  margin-left: 250px; /* Dịch nội dung chính sang phải tránh che sidebar */
-  width: calc(100% - 250px); /* Đảm bảo không bị tràn màn hình */
+  margin-left: 250px;
+  width: calc(100% - 250px);
   display: flex;
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  padding: 70px 20px 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
   background-color: #ecf0f1;
   overflow-y: auto;
 }
@@ -80,7 +81,7 @@ body {
   height: 150px;
   border-radius: 50%;
   overflow: hidden;
-  margin: 0 auto 20px auto; /* căn giữa và cách dưới 20px */
+  margin: 0 auto 20px auto;
   position: relative;
   cursor: pointer;
   border: 3px solid #2980b9;
@@ -92,7 +93,6 @@ body {
   object-fit: cover;
 }
 
-/* Ẩn input file nhưng vẫn kích hoạt được khi click vào khung avatar */
 .avatar-container input[type="file"] {
   position: absolute;
   width: 100%;
@@ -104,14 +104,13 @@ body {
 /* ================= FORM CÀI ĐẶT ================= */
 form {
   background: #fff;
-  padding: 25px;
+  padding: 20px 25px;
   border-radius: 8px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   width: 80%;
-  max-width: 700px; /* Giữ form có kích thước vừa phải */
+  max-width: 600px;
 }
 
-/* Fieldset (nhóm form) */
 fieldset {
   border: none;
   margin-bottom: 15px;
@@ -121,13 +120,19 @@ fieldset {
 }
 
 legend {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: #425cb1;
   margin-bottom: 10px;
 }
 
-/* Label & Input */
+.legend-with-checkbox {
+  display: inline-flex;     /* hoặc display: flex; */
+  align-items: center;      /* căn giữa theo chiều dọc */
+  white-space: nowrap;      /* ngăn chữ bị xuống dòng */
+  gap: 8px;
+}
+
 label {
   display: block;
   font-weight: bold;
@@ -137,13 +142,26 @@ label {
 input,
 textarea {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #bdc3c7;
   border-radius: 5px;
   font-size: 14px;
 }
 
-/* Nhóm nút */
+/* Thông báo lỗi */
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* Đổi mật khẩu: căn chỉnh checkbox và dòng chữ */
+.change-password-toggle {
+  transform: scale(1.5);
+  margin-left: 5px;
+}
+
+/* Nhóm nút thao tác */
 .button-group {
   display: flex;
   justify-content: center;
@@ -177,11 +195,8 @@ textarea {
   .main-content {
     margin-left: 0;
     width: 100%;
-    height: auto;
-    align-items: flex-start;
     padding-top: 50px;
   }
-
   form {
     max-width: 90%;
   }

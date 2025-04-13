@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lịch Phân Công</title>
     <link rel="stylesheet" href="../../css/admin/home.css" />
-    <!-- Font Awesome để dùng icon -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -28,35 +27,35 @@
         </li>
       </ul>
     </div>
+
     <div class="content">
       <h1>Lịch Phân Công</h1>
-      <table>
-        <tr>
-          <th>Tên Bệnh Nhân</th>
-          <th>Tuổi</th>
-          <th>Số điện thoại</th>
-          <th>Thời gian đặt lịch</th>
-          <th>Dịch vụ</th>
-          <th>Bác sĩ trực</th>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button class="btn view">Xem thêm</button></td>
-          <td><button class="btn choose">Choose</button></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button class="btn view">Xem thêm</button></td>
-          <td><button class="btn choose">Choose</button></td>
-        </tr>
+      <table id="appointments-table">
+        <thead>
+          <tr>
+            <th>Tên Bệnh Nhân</th>
+            <th>Thời gian đặt</th>
+            <th>Chi tiết</th>
+            <th>Bác sĩ trực</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dữ liệu từ Firebase sẽ được render ở đây bằng JavaScript -->
+        </tbody>
       </table>
     </div>
-    <script src="../../javascript/admin/home.js"></script>
+
+    <!-- Modal chọn bác sĩ -->
+    <div id="doctor-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Chọn bác sĩ trực</h3>
+        <ul id="doctor-list">
+          <!-- Danh sách bác sĩ render tại đây -->
+        </ul>
+      </div>
+    </div>
+
+    <script type="module" src="../../javascript/admin/home.js"></script>
   </body>
 </html>

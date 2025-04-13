@@ -2,23 +2,14 @@ import { db } from "../config.js";
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const doctorId = localStorage.getItem("doctorId");
+  const urlParams = new URLSearchParams(window.location.search);
+  const doctorId = urlParams.get("doctorId");
 
   if (!doctorId) {
     alert("Không có thông tin bác sĩ, vui lòng đăng nhập lại.");
     window.location.href = "../../shared/login.html";
     return;
   }
-
-  // 👉 Hàm format ngày để so sánh
-  function formatDate(date) {
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
-    const dd = String(date.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
-
-  const todayFormatted = formatDate(new Date());
 
   try {
     // Lấy thông tin bác sĩ
@@ -41,15 +32,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       alert("Không tìm thấy thông tin bác sĩ.");
     }
 
-    // 👉 Truy vấn lịch hẹn theo doctorId và ngày hôm nay
+    // 🔧 Lấy danh sách lịch hẹn của bác sĩ (dùng doctorID thay vì doctorId)
     const appointmentsRef = collection(db, "appointments");
-    const appointmentQuery = query(
-      appointmentsRef,
-      where("doctorID", "==", doctorId),
-      where("date", "==", todayFormatted)
-    );
-
+    const appointmentQuery = query(appointmentsRef, where("doctorID", "==", doctorId));
     const appointmentSnapshot = await getDocs(appointmentQuery);
+
     const appointmentList = document.getElementById("appointment-list");
     appointmentList.innerHTML = "";
 
@@ -58,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       const li = document.createElement("li");
       li.className = "appointment-item";
-      li.dataset.name = data.patientName;
+      li.dataset.name = data.patientName;  // Thay đổi từ 'name' thành 'patientName'
       li.dataset.service = data.service;
       li.dataset.note = data.note;
 
@@ -66,12 +53,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="Calendar Icon" class="appointment-icon" />
         <div class="appointment-info">
           <div class="appointment-time">${data.time}</div>
-          <div class="appointment-patient">${data.patientName}</div>
+          <div class="appointment-patient">${data.patientName}</div>  <!-- Thay đổi từ 'name' thành 'patientName' -->
         </div>
       `;
 
       li.addEventListener("click", function () {
-        document.getElementById("modalName").textContent = data.patientName;
+        document.getElementById("modalName").textContent = data.patientName;  // Thay đổi từ 'name' thành 'patientName'
         document.getElementById("modalTime").textContent = data.time;
         document.getElementById("modalService").textContent = data.service;
         document.getElementById("modalNote").textContent = data.note;

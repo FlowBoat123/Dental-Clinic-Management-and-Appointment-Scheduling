@@ -513,6 +513,12 @@ footer {
   border-radius: 5px;
   font-size: 14px;
 }
+#week-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Hoặc chiều cao mong muốn */
+}
 
 /* Modal */
 .modal {

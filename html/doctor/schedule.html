@@ -61,9 +61,9 @@
         <h1>Lịch làm việc theo tuần</h1>
         <div class="calendar">
           <div class="calendar-header">
-            <button id="prev-week">◀</button>
+            <button id="prev-week"></button>
             <h2 id="week-title">Tuần này</h2>
-            <button id="next-week">▶</button>
+            <button id="next-week"></button>
           </div>
           <table class="calendar-table">
             <thead>
@@ -226,6 +226,18 @@
       </div>
     </div>
 
-    <script src="../../javascript/doctor/schedule.js"></script>
+    <!-- Modal -->
+    <div id="appointment-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Chi tiết lịch hẹn</h3>
+        <p><strong>Tên:</strong> <span id="modal-name">Chưa có thông tin</span></p>
+        <p><strong>Thời gian:</strong> <span id="modal-time">Chưa có thông tin</span></p>
+        <p><strong>Dịch vụ:</strong> <span id="modal-service">Chưa có thông tin</span></p>
+        <p><strong>Ghi chú:</strong> <span id="modal-notes">Chưa có thông tin</span></p>
+      </div>
+    </div>
+    
+    <script type="module" src="../../javascript/doctor/schedule.js"></script>
   </body>
 </html>

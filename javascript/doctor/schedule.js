@@ -75,12 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const date = new Date(days[col]);
 
-      // Ensure date is valid before proceeding
-      // if (isNaN(date.getTime())) {
-      //   console.warn("Invalid date object:", date);
-      //   return;
-      // }
-
       const [hourStr, minuteStr] = time.split(":");
       const hour = parseInt(hourStr);
       const minute = parseInt(minuteStr);

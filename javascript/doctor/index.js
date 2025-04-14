@@ -32,7 +32,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     if (doctorData) {
-      document.getElementById("doctor-name").textContent = doctorData.name;
+      document.getElementById("doctor-name-display").textContent = doctorData.name;
+      document.getElementById("doctor-name-welcome").textContent = doctorData.name;
       document.getElementById("doctor-phone").textContent = doctorData.phone;
       document.getElementById("doctor-specialty").textContent = doctorData.specialty;
       document.getElementById("doctor-birthdate").textContent = doctorData.birthdate;

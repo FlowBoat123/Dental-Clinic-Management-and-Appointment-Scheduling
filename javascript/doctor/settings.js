@@ -1,63 +1,47 @@
+import { db } from '../config.js';
+import { collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", function () {
   // --- Avatar update ---
   const avatarContainer = document.getElementById("avatarContainer");
   const avatarInput = document.getElementById("avatarInput");
   const avatarPreview = document.getElementById("avatarPreview");
 
-  if (avatarContainer && avatarInput && avatarPreview) {
-    avatarContainer.addEventListener("click", function () {
-      avatarInput.click();
-    });
+  const doctorId = localStorage.getItem("doctorId");
 
-    avatarInput.addEventListener("change", function () {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          avatarPreview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
+  async function fetchAppointmentsForDoctor(doctorId) {
+    const appointmentsRef = collection(db, "appointments");
+    const q = query(appointmentsRef, where("doctorID", "==", doctorId));
+    const querySnapshot = await getDocs(q);
+    let appointments = [];
+    querySnapshot.forEach((doc) => {
+      appointments.push(doc.data());
+    });
+    return appointments;
+  }
+
+  // --- Hiển thị các lịch hẹn của bác sĩ ---
+  async function displayAppointments(doctorId) {
+    const appointments = await fetchAppointmentsForDoctor(doctorId);
+    const appointmentList = document.getElementById("appointment-list");
+
+    // Xóa danh sách lịch hẹn cũ
+    appointmentList.innerHTML = "";
+
+    appointments.forEach((appointment) => {
+      const listItem = document.createElement("li");
+      listItem.textContent = `Bệnh nhân: ${appointment.patientName}, Giờ khám: ${appointment.time}`;
+      appointmentList.appendChild(listItem);
     });
   }
 
-  // --- Toggle đổi mật khẩu ---
-  const toggleChangePassword = document.getElementById("toggle-change-password");
-  const passwordFields = document.getElementById("password-fields");
+  // Gọi hàm để hiển thị các lịch hẹn của bác sĩ
+  displayAppointments(doctorId);
 
-  if (toggleChangePassword && passwordFields) {
-    toggleChangePassword.addEventListener("change", function () {
-      if (this.checked) {
-        passwordFields.style.display = "block";
-      } else {
-        passwordFields.style.display = "none";
-        // Xóa giá trị trong các ô mật khẩu khi không đổi
-        document.getElementById("current-password").value = "";
-        document.getElementById("new-password").value = "";
-        document.getElementById("confirm-password").value = "";
-        // Xóa thông báo lỗi nếu có
-        document.getElementById("error-current-password").innerText = "";
-        document.getElementById("error-new-password").innerText = "";
-        document.getElementById("error-confirm-password").innerText = "";
-      }
-    });
-  }
-
-  // --- Xử lý sự kiện submit form ---
+  // --- Cập nhật thông tin bác sĩ ---
   const settingsForm = document.getElementById("settingsForm");
-  settingsForm.addEventListener("submit", function (e) {
+  settingsForm.addEventListener("submit", async function (e) {
     e.preventDefault(); // Ngăn gửi form để kiểm tra các lỗi
-
-    // Xóa thông báo lỗi cũ
-    clearError("fullname");
-    clearError("dob");
-    clearError("email");
-    clearError("phone");
-    if (toggleChangePassword.checked) {
-      clearError("current-password");
-      clearError("new-password");
-      clearError("confirm-password");
-    }
 
     let valid = true;
 
@@ -81,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const email = document.getElementById("email").value.trim();
     const phone = document.getElementById("phone").value.trim();
 
-    // Kiểm tra các trường bắt buộc (trừ phần đổi mật khẩu và không có certificates)
+    // Kiểm tra các trường bắt buộc
     if (!fullname) {
       showError("fullname", "Họ và tên không được để trống.");
       valid = false;
@@ -114,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Nếu checkbox đổi mật khẩu được chọn thì kiểm tra các ô mật khẩu
+    const toggleChangePassword = document.getElementById("toggle-change-password");
     if (toggleChangePassword.checked) {
       const currentPassword = document.getElementById("current-password").value.trim();
       const newPassword = document.getElementById("new-password").value.trim();
@@ -137,10 +122,21 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Nếu mọi thứ đều hợp lệ
+    // Nếu mọi thứ hợp lệ, cập nhật thông tin vào Firestore
     if (valid) {
-      alert("Thông tin hợp lệ. Form sẽ được gửi.");
-      // settingsForm.submit(); // Bật lại nếu muốn thực sự gửi form
+      try {
+        const doctorRef = doc(db, "doctors", doctorId);
+        await updateDoc(doctorRef, {
+          fullname: fullname,
+          dob: dob,
+          email: email,
+          phone: phone
+        });
+        alert("Thông tin bác sĩ đã được cập nhật.");
+      } catch (error) {
+        console.error("Lỗi khi cập nhật thông tin bác sĩ: ", error);
+        alert("Có lỗi xảy ra. Vui lòng thử lại.");
+      }
     }
   });
 });

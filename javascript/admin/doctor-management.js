@@ -2,20 +2,24 @@ import { db } from "../config.js";
 import {
   collection,
   getDocs,
-  addDoc
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const addAccountBtn = document.getElementById("addAccountBtn");
-  const table = document.getElementById("doctorTable");
-
+  const tableBody = document.querySelector("#doctorTable tbody");
   const headers = ["Tên", "Ngày sinh", "Số điện thoại", "Email", "Mật khẩu"];
 
   async function loadDoctors() {
+    tableBody.innerHTML = "";
     const querySnapshot = await getDocs(collection(db, "doctors"));
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const newRow = table.insertRow(-1);
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const newRow = tableBody.insertRow(-1);
+      newRow.dataset.id = docSnap.id;
 
       newRow.insertCell(0).textContent = data.name;
       newRow.insertCell(1).textContent = data.birthdate;
@@ -27,9 +31,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       const saveCell = newRow.insertCell(6);
       const deleteCell = newRow.insertCell(7);
 
-      editCell.innerHTML = `<button class="btn edit"><i class="fas fa-edit"></i></button>`;
-      saveCell.innerHTML = `<button class="btn save"><i class="fas fa-save"></i></button>`;
-      deleteCell.innerHTML = `<button class="btn delete"><i class="fas fa-trash-alt"></i></button>`;
+      editCell.innerHTML = `<button class=\"btn edit\"><i class=\"fas fa-edit\"></i></button>`;
+      saveCell.innerHTML = `<button class=\"btn save\"><i class=\"fas fa-save\"></i></button>`;
+      deleteCell.innerHTML = `<button class=\"btn delete\"><i class=\"fas fa-trash-alt\"></i></button>`;
 
       addEditEvent(editCell.querySelector(".edit"));
       addSaveEvent(saveCell.querySelector(".save"));
@@ -38,22 +42,22 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function addAccount() {
-    const newRow = table.insertRow(-1);
+    const newRow = tableBody.insertRow(-1);
+    newRow.dataset.id = "";
 
     for (let i = 0; i < 5; i++) {
       const cell = newRow.insertCell(i);
-      let inputType = "text";
-      if (i === 1) inputType = "date"; // Ngày sinh
-      cell.innerHTML = `<input type="${inputType}" placeholder="Nhập dữ liệu" />`;
+      const inputType = i === 1 ? "date" : "text";
+      cell.innerHTML = `<input type=\"${inputType}\" placeholder=\"Nhập dữ liệu\" />`;
     }
 
     const editCell = newRow.insertCell(5);
     const saveCell = newRow.insertCell(6);
     const deleteCell = newRow.insertCell(7);
 
-    editCell.innerHTML = `<button class="btn edit"><i class="fas fa-edit"></i></button>`;
-    saveCell.innerHTML = `<button class="btn save"><i class="fas fa-save"></i></button>`;
-    deleteCell.innerHTML = `<button class="btn delete"><i class="fas fa-trash-alt"></i></button>`;
+    editCell.innerHTML = `<button class=\"btn edit\"><i class=\"fas fa-edit\"></i></button>`;
+    saveCell.innerHTML = `<button class=\"btn save\"><i class=\"fas fa-save\"></i></button>`;
+    deleteCell.innerHTML = `<button class=\"btn delete\"><i class=\"fas fa-trash-alt\"></i></button>`;
 
     addEditEvent(editCell.querySelector(".edit"));
     addSaveEvent(saveCell.querySelector(".save"));
@@ -64,15 +68,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     button.addEventListener("click", function () {
       const row = this.closest("tr");
       const cells = row.querySelectorAll("td");
-
       for (let i = 0; i < 5; i++) {
         const currentCell = cells[i];
-        const currentValue = currentCell.textContent;
-
+        const text = currentCell.textContent;
         if (!currentCell.querySelector("input")) {
           const input = document.createElement("input");
-          input.type = (i === 1) ? "date" : "text";
-          input.value = (i === 1 && isValidDate(currentValue)) ? formatDateForInput(currentValue) : currentValue;
+          input.type = i === 1 && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(text)
+            ? "date"
+            : i === 1 ? "date" : "text";
+          input.value = input.type === "date" ? formatDateForInput(text) : text;
           currentCell.innerHTML = "";
           currentCell.appendChild(input);
         }
@@ -80,92 +84,100 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   }
 
-  function isValidDate(dateString) {
-    const regex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-    return regex.test(dateString);
-  }
-
-  function formatDateForInput(dateString) {
-    const [day, month, year] = dateString.split("/");
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  }
-
   function addSaveEvent(button) {
     button.addEventListener("click", async function () {
       const row = this.closest("tr");
+      // Nếu không trong trạng thái sửa (không có input), thoát
+      const inputs = row.querySelectorAll("input");
+      if (inputs.length === 0) return;
+  
       const cells = row.querySelectorAll("td");
       const emptyFields = [];
-
+  
+      // Kiểm tra ô trống
       for (let i = 0; i < 5; i++) {
         const input = cells[i].querySelector("input");
         if (!input || input.value.trim() === "") {
           emptyFields.push(headers[i]);
         }
       }
-
-      const phoneInput = cells[2].querySelector("input");
-      const phonePattern = /^\d{10}$/;
-      if (phoneInput && !phonePattern.test(phoneInput.value.trim())) {
-        alert("Số điện thoại phải gồm 10 chữ số.");
-        return;
-      }
-      
-      const emailInput = cells[3].querySelector("input");
-      if (emailInput && !emailInput.value.includes("@")) {
-        alert("Email phải chứa ký tự '@'.");
-        return;
-      }
-
-      if (emptyFields.length > 0) {
+      if (emptyFields.length) {
         alert("Các ô sau đang trống: " + emptyFields.join(", "));
         return;
       }
-
+  
+      // Validate số điện thoại
+      const phoneVal = cells[2].querySelector("input").value.trim();
+      if (!/^\d{10}$/.test(phoneVal)) {
+        alert("Số điện thoại phải gồm 10 chữ số.");
+        return;
+      }
+      // Validate email
+      const emailVal = cells[3].querySelector("input").value.trim();
+      if (!emailVal.includes("@")) {
+        alert("Email phải chứa ký tự '@'.");
+        return;
+      }
+  
+      // Lấy dữ liệu sau khi đã kiểm tra
       const name = cells[0].querySelector("input").value.trim();
-      const birthdateRaw = cells[1].querySelector("input").value;
-      const phone = cells[2].querySelector("input").value.trim();
-      const email = cells[3].querySelector("input").value.trim();
+      const birthRaw = cells[1].querySelector("input").value;
+      const birthFormatted = formatDateForDisplay(birthRaw);
+      const phone = phoneVal;
+      const email = emailVal;
       const password = cells[4].querySelector("input").value.trim();
-
-      const birthdateDate = new Date(birthdateRaw);
-      const formattedBirthdate = `${birthdateDate.getDate()}/${birthdateDate.getMonth() + 1}/${birthdateDate.getFullYear()}`;
-
+  
+      const payload = { name, birthdate: birthFormatted, phone, email, password };
       try {
-        await addDoc(collection(db, "doctors"), {
-          name,
-          birthdate: formattedBirthdate,
-          phone,
-          email,
-          password
-        });
-        alert("Thêm bác sĩ thành công!");
-
-        cells[0].textContent = name;
-        cells[1].textContent = formattedBirthdate;
-        cells[2].textContent = phone;
-        cells[3].textContent = email;
-        cells[4].textContent = password;
-      } catch (error) {
-        console.error("Lỗi khi thêm bác sĩ:", error);
-        alert("Có lỗi xảy ra khi lưu dữ liệu.");
+        const id = row.dataset.id;
+        if (id) {
+          await updateDoc(doc(db, "doctors", id), payload);
+        } else {
+          const newDoc = await addDoc(collection(db, "doctors"), payload);
+          row.dataset.id = newDoc.id;
+        }
+        // Ghi đè giá trị lên cell và loại bỏ input
+        for (let i = 0; i < 5; i++) {
+          cells[i].textContent = [name, birthFormatted, phone, email, password][i];
+        }
+        alert("Lưu thành công!");
+      } catch (err) {
+        console.error(err);
+        alert("Lỗi khi lưu dữ liệu.");
       }
     });
   }
+  
 
   function addDeleteEvent(button) {
-    button.addEventListener("click", function () {
-      if (confirm("Bạn có chắc chắn muốn xóa dòng này không?")) {
+    button.addEventListener("click", async function () {
+      if (confirm("Bạn có chắc chắn muốn xóa thông tin Bác Sĩ này không?")) {
         const row = this.closest("tr");
+        const id = row.dataset.id;
+        if (id) {
+          try {
+            await deleteDoc(doc(db, "doctors", id));
+          } catch (e) {
+            console.error("Lỗi xóa Firestore:", e);
+            alert("Xóa trên server thất bại.");
+            return;
+          }
+        }
         row.remove();
       }
     });
   }
 
-  document.querySelectorAll(".edit").forEach(addEditEvent);
-  document.querySelectorAll(".save").forEach(addSaveEvent);
-  document.querySelectorAll(".delete").forEach(addDeleteEvent);
+  function formatDateForInput(displayDate) {
+    const [d, m, y] = displayDate.split("/");
+    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+  }
+
+  function formatDateForDisplay(rawDate) {
+    const dt = new Date(rawDate);
+    return `${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear()}`;
+  }
 
   addAccountBtn.addEventListener("click", addAccount);
-
   await loadDoctors();
 });

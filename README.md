@@ -20,8 +20,6 @@ Dự án giúp phòng khám nha khoa:
 - Đặt và tra cứu lịch hẹn khám
 - Tương tác tự động với người dùng thông qua chatbot AI
 
-Toàn bộ logic chạy phía frontend (HTML/CSS/JS) kết nối trực tiếp với Firebase và Google Dialogflow, **không cần backend riêng (Node.js)**.
-
 ---
 
 ## Tính năng chính

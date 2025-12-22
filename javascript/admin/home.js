@@ -11,6 +11,7 @@ const tableBody = document.querySelector("#appointments-table tbody");
 const modal = document.getElementById("doctor-modal");
 const doctorList = document.getElementById("doctor-list");
 const closeModal = document.querySelector(".modal .close");
+const cancelModal = document.querySelector(".modal .cancel");
 
 let doctors = [];
 let selectedAppointmentId = null;
@@ -18,42 +19,53 @@ let selectedAppointmentId = null;
 // Fetch doctors
 async function fetchDoctors() {
   const snapshot = await getDocs(collection(db, "doctors"));
-  doctors = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
+  doctors = snapshot.docs.map(docSnap => ({
+    id: docSnap.id,
+    ...docSnap.data()
   }));
+}
+
+// Helper: get doctor name by ID
+function getDoctorName(doctorId) {
+  const doctor = doctors.find(d => d.id === doctorId);
+  return doctor ? doctor.name : null;
 }
 
 // Fetch appointments and render
 async function renderAppointments() {
   const snapshot = await getDocs(collection(db, "appointments"));
-  tableBody.innerHTML = ""; // Clear existing rows
+  const items = [];
 
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
+    items.push({ id: docSnap.id, ...data });
+  });
+
+  // Separate unassigned and assigned
+  const unassigned = items.filter(item => !item.doctorID);
+  const assigned = items.filter(item => item.doctorID);
+
+  // Render unassigned first, then assigned
+  tableBody.innerHTML = "";
+  [...unassigned, ...assigned].forEach(item => {
     const tr = document.createElement("tr");
+    if (!item.doctorID) tr.classList.add("unassigned");
+
+    const displayName = item.doctorID ? getDoctorName(item.doctorID) : "Chọn";
 
     tr.innerHTML = `
-      <td>${data.patientName}</td>
-      <td>${data.date} ${data.time}</td>
-      <td>
-        <button class="btn view">Xem thêm</button>
-      </td>
-      <td>
-        <button class="btn choose" data-id="${docSnap.id}">
-          ${data.doctorID || "Choose"}
-        </button>
-      </td>
+      <td>${item.patientName}</td>
+      <td>${item.date} ${item.time}</td>
+      <td><button class="btn view">Xem thêm</button></td>
+      <td><button class="btn choose" data-id="${item.id}">${displayName}</button></td>
     `;
 
-    // "Xem thêm" click
+    // Events
     tr.querySelector(".view").addEventListener("click", () => {
-      alert(`Ghi chú: ${data.note || "Không có"}\nDịch vụ: ${data.service}`);
+      alert(`Ghi chú: ${item.note || "Không có"}\nDịch vụ: ${item.service}`);
     });
-
-    // "Choose" click
     tr.querySelector(".choose").addEventListener("click", () => {
-      selectedAppointmentId = docSnap.id;
+      selectedAppointmentId = item.id;
       showDoctorModal();
     });
 
@@ -64,34 +76,30 @@ async function renderAppointments() {
 // Show modal with doctor list
 function showDoctorModal() {
   doctorList.innerHTML = "";
-
   doctors.forEach(doctor => {
     const li = document.createElement("li");
     li.textContent = doctor.name;
-    li.style.cursor = "pointer";
     li.addEventListener("click", async () => {
       await assignDoctor(selectedAppointmentId, doctor.id);
       modal.style.display = "none";
-      renderAppointments(); // refresh UI
+      await renderAppointments();
     });
     doctorList.appendChild(li);
   });
-
   modal.style.display = "block";
 }
 
 // Assign doctor to appointment
 async function assignDoctor(appointmentId, doctorId) {
-  const appointmentRef = doc(db, "appointments", appointmentId);
-  await updateDoc(appointmentRef, {
-    doctorID: doctorId
-  });
+  await updateDoc(doc(db, "appointments", appointmentId), { doctorID: doctorId });
 }
 
-// Close modal
-closeModal.addEventListener("click", () => {
-  modal.style.display = "none";
-});
+// Close modal via both close buttons
+[closeModal, cancelModal].forEach(el =>
+  el.addEventListener("click", () => {
+    modal.style.display = "none";
+  })
+);
 
 // Init
 (async () => {

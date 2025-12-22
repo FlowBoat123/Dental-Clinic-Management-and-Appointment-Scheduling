@@ -1,0 +1,173 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.chat-container {
+    width: 400px;
+    height: 500px; /* Đặt chiều cao để có không gian cho mic */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px; /* Tạo khoảng trống cho mic */
+}
+
+.chatbox {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px 0;
+    max-width: 80%;
+}
+
+.user-message {
+    background: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.bot-message {
+    background: #e9ecef;
+    color: black;
+    align-self: flex-start;
+}
+
+.mic {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    align-self: center; /* Căn giữa trong chat-container */
+    margin-top: auto; /* Đẩy xuống đáy chat-container */
+    transition: all 0.5s ease;
+}
+
+.mic.active {
+    width: 120px;
+    height: 50px;
+    border-radius: 25px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.mic-icon {
+    font-size: 24px;
+    color: black;
+    transition: opacity 0.3s ease;
+}
+
+.stop-icon {
+    font-size: 24px;
+    display: none;
+    color: #ff4d4d;
+}
+
+.mic.active .mic-icon {
+    display: none;
+}
+
+.mic.active .stop-icon {
+    color: red;
+    display: inline;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between; /* Giữ logo bên trái, menu + nút về bên phải */
+    align-items: center;
+    padding: 15px 50px;
+    background-color: #f0f0f0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  /* Logo */
+  .logo {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .logo a {
+    text-decoration: none;
+    color: #000;
+  }
+  
+  /* Nhóm chứa menu và nút đặt lịch */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Tạo khoảng cách giữa menu và nút đặt lịch */
+  }
+  
+  /* Menu */
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px; /* Tạo khoảng cách giữa các mục menu */
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 1100;
+  }
+  
+  nav ul li {
+    display: inline;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+  }
+  
+  /* Button đặt lịch (đã cập nhật) */
+  .booking-btn {
+    background-color: #4097fa;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    position: relative;
+    z-index: 900;
+  }
+  
+  .booking-btn:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+  }
+  

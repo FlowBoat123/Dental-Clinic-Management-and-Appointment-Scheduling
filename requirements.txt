@@ -1,0 +1,8 @@
+Flask
+requests
+firebase-admin
+python-dotenv
+Werkzeug
+PyJWT
+sendgrid
+flask-cors

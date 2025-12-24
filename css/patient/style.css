@@ -710,3 +710,49 @@ footer {
   margin-right: 10px;
   font-size: 18px;
 }
+
+/* ===== Email Verification Status ===== */
+#email-status {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 5px;
+  border-left: 4px solid #4CAF50;
+  background-color: #f0f8f0;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+#email-status #email-message {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styling cho input email và số điện thoại */
+#appointment-form input[type="email"],
+#appointment-form input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+#appointment-form input[type="email"]:focus,
+#appointment-form input[type="tel"]:focus {
+  outline: none;
+  border-color: #4097fa;
+  box-shadow: 0 0 5px rgba(64, 151, 250, 0.3);
+}

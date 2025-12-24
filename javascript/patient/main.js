@@ -1,7 +1,8 @@
 import { db } from "../config.js";
 import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Utility: chuẩn hóa date về định dạng YYYY-MM-DD
+// ===== API Base URL =====
+const API_BASE_URL = "http://localhost:5000";
 function formatDateToISO(dateInput) {
     const date = new Date(dateInput);
     return date.toISOString().split("T")[0];
@@ -82,10 +83,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const appointmentForm = document.getElementById("appointment-form");
     const patientNameInput = document.getElementById("patient-name");
+    const patientEmailInput = document.getElementById("patient-email");
+    const patientPhoneInput = document.getElementById("patient-phone");
     const serviceSelect = document.getElementById("service");
     const appointmentDayInput = document.getElementById("appointment-day");
     const appointmentTimeSelect = document.getElementById("appointment-time");
     const appointmentNoteInput = document.getElementById("appointment-note");
+    const submitBtn = document.getElementById("submit-btn");
+    const emailStatus = document.getElementById("email-status");
+    const emailMessage = document.getElementById("email-message");
 
     const closeButtons = modal.querySelectorAll(".close");
 
@@ -155,8 +161,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 appointmentDayInput.value = day;
                 appointmentTimeSelect.value = time;
                 patientNameInput.value = "";
+                patientEmailInput.value = "";
+                patientPhoneInput.value = "";
                 serviceSelect.value = "";
                 appointmentNoteInput.value = "";
+                emailStatus.style.display = "none";
+                submitBtn.disabled = false;
                 modal.style.display = "flex";
 
                 appointmentForm.dataset.selectedDate = date;
@@ -180,24 +190,104 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.preventDefault();
         const day = appointmentDayInput.value;
         const rawDate = appointmentForm.dataset.selectedDate;
-        const date = formatDateToISO(rawDate); // chuẩn hóa trước khi lưu
+        const date = formatDateToISO(rawDate);
         const time = appointmentTimeSelect.value;
         const patientName = patientNameInput.value.trim();
+        const email = patientEmailInput.value.trim();
+        const phone = patientPhoneInput.value.trim();
         const service = serviceSelect.value;
         const note = appointmentNoteInput.value.trim();
 
-        if (!patientName || !service) {
+        if (!patientName || !email || !phone || !service) {
             alert("Vui lòng điền đầy đủ thông tin cần thiết!");
             return;
         }
 
-        await addDoc(collection(db, "appointments"), {
-            day, date, time, patientName, service, note
-        });
+        if (!validateEmail(email)) {
+            alert("Email không hợp lệ!");
+            return;
+        }
 
-        renderAppointments();
-        modal.style.display = "none";
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Đang gửi email...";
+
+        try {
+            // Gủi request tới backend để gửi email xác nhận
+            const response = await fetch(`${API_BASE_URL}/send-verification-email`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    patientName,
+                    email,
+                    phone,
+                    date,
+                    time,
+                    day,
+                    service,
+                    note,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.status === "success") {
+                emailStatus.style.display = "block";
+                emailMessage.textContent = `✅ Email xác nhận đã được gửi tới ${email}. Vui lòng kiểm tra email để xác nhận lịch hẹn.`;
+                emailMessage.style.color = "#4CAF50";
+                
+                // Lưu tạm thời dữ liệu để chờ xác nhận
+                const appointmentData = {
+                    patientName, email, phone, date, time, day, service, note,
+                    verified: false,
+                    createdAt: new Date().toISOString()
+                };
+                sessionStorage.setItem(`pending_appointment_${email}`, JSON.stringify(appointmentData));
+
+                setTimeout(() => {
+                    appointmentForm.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Gửi email xác nhận";
+                    modal.style.display = "none";
+                }, 2000);
+            } else {
+                emailStatus.style.display = "block";
+                emailMessage.textContent = `❌ Lỗi: ${result.message || "Không thể gửi email"}`;
+                emailMessage.style.color = "#f44336";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Gửi email xác nhận";
+            }
+        } catch (error) {
+            console.error("Lỗi:", error);
+            emailStatus.style.display = "block";
+            emailMessage.textContent = `❌ Lỗi kết nối: ${error.message}`;
+            emailMessage.style.color = "#f44336";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Gửi email xác nhận";
+        }
     });
+
+    // Hàm validate email
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // Hàm kiểm tra xác nhận lịch hẹn từ URL
+    function checkAppointmentConfirmation() {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        
+        if (token) {
+            // Nếu có token, thì người dùng đã xác nhận email
+            // Reload danh sách lịch hẹn
+            renderAppointments();
+        }
+    }
+
+    // Kiểm tra khi trang load
+    checkAppointmentConfirmation();
 
     closeDetailsBtn.addEventListener("click", () => {
         modal.style.display = "none";

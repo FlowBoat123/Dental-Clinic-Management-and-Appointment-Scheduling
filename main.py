@@ -26,14 +26,14 @@ app = Flask(__name__)
 CORS(app)  # Cho phép cross-origin requests
 
 # ====================== DEEPSEEK API CONFIG ======================
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
 
 if not DEEPSEEK_API_KEY:
     logging.warning("⚠️  DEEPSEEK_API_KEY not found in environment variables")
 
 # Khóa API OpenWeatherMap
-OPENWEATHER_API_KEY = "ab8f25f7e1b90d9a754a2d094887c5cb"
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # ====================== EMAIL CONFIG ======================
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "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")

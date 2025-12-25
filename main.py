@@ -12,8 +12,9 @@ import secrets
 import string
 import json
 from flask import redirect, url_for
-from service.google_calendar_service import (
+from service.calendar.google_calendar_service import (
     create_calendar_event, 
+    delete_calendar_event,
     get_auth_url, 
     exchange_code_for_credentials, 
     credentials_to_dict
@@ -617,6 +618,35 @@ def assign_doctor():
             return jsonify({"status": "error", "message": "Không tìm thấy cuộc hẹn"}), 404
 
         appointment_data = doc_snapshot.to_dict()
+
+        # Check if doctor is already assigned
+        old_doctor_id = appointment_data.get('doctorID')
+        if old_doctor_id == doctor_id:
+            return jsonify({
+                "status": "success", 
+                "message": "Bác sĩ này đang đảm nhận cuộc hẹn này rồi."
+            }), 200
+
+        # Check for previous doctor and remove event
+        google_event_id = appointment_data.get('googleEventId')
+
+        if old_doctor_id and old_doctor_id != doctor_id and google_event_id:
+            logging.info(f"🔄 Re-assigning from doctor {old_doctor_id} to {doctor_id}. Removing old calendar event...")
+            try:
+                old_doctor_ref = db.collection("doctors").document(old_doctor_id)
+                old_doctor_snap = old_doctor_ref.get()
+                if old_doctor_snap.exists:
+                    old_token = old_doctor_snap.to_dict().get('google_token')
+                    if old_token:
+                        logging.info(f"Calling delete_calendar_event for event {google_event_id}")
+                        result = delete_calendar_event(google_event_id, old_token)
+                        logging.info(f"delete_calendar_event result: {result}")
+                    else:
+                        logging.warning(f"Old doctor {old_doctor_id} has no google_token. Cannot delete event.")
+                else:
+                    logging.warning(f"Old doctor {old_doctor_id} not found in DB.")
+            except Exception as e:
+                logging.error(f"⚠️ Failed to remove event from old doctor's calendar: {e}")
 
         # 2. Cập nhật doctorID vào Firestore
         doc_ref.update({"doctorID": doctor_id})

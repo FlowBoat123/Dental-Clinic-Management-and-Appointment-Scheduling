@@ -4,6 +4,7 @@ import json
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
@@ -90,7 +91,6 @@ def create_calendar_event(appointment_data, token_info):
             'description': (
                 f"Dịch vụ: {appointment_data['service']}\n"
                 f"SĐT: {appointment_data.get('phone', 'N/A')}\n"
-                f"Email: {appointment_data.get('email', 'N/A')}\n"
                 f"Ghi chú: {appointment_data.get('note', '')}"
             ),
             'start': {
@@ -121,3 +121,33 @@ def create_calendar_event(appointment_data, token_info):
     except Exception as e:
         logging.error(f"❌ Error creating Google Calendar event: {str(e)}")
         return None
+
+def delete_calendar_event(event_id, token_info):
+    """
+    Deletes an event from Google Calendar using the doctor's credentials.
+
+    Args:
+        event_id (str): The Google Calendar Event ID.
+        token_info (dict): The stored OAuth2 token dictionary for the doctor.
+
+    Returns:
+        bool: True if successful, False otherwise.
+    """
+    service = get_calendar_service(token_info)
+    if not service:
+        logging.error("❌ Failed to get calendar service in delete_calendar_event")
+        return False
+
+    try:
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        logging.info(f"✅ Google Calendar event deleted: {event_id}")
+        return True
+    except HttpError as e:
+        if e.resp.status in [404, 410]:
+            logging.warning(f"⚠️ Event {event_id} already deleted (Status {e.resp.status}).")
+            return True
+        logging.error(f"❌ Error deleting Google Calendar event: {str(e)}")
+        return False
+    except Exception as e:
+        logging.error(f"❌ Error deleting Google Calendar event: {str(e)}")
+        return False

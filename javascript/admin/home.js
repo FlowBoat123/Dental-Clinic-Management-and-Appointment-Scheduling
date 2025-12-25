@@ -76,12 +76,35 @@ async function renderAppointments() {
 // Show modal with doctor list
 function showDoctorModal() {
   doctorList.innerHTML = "";
+  
+  // Prevent duplicate clicks global flag
+  let isAssigning = false;
+
   doctors.forEach(doctor => {
     const li = document.createElement("li");
     li.textContent = doctor.name;
+    li.style.cursor = "pointer";
+    li.style.padding = "10px";
+    li.style.borderBottom = "1px solid #eee";
+
     li.addEventListener("click", async () => {
+      if (isAssigning) return; // Block double clicks
+      isAssigning = true;
+
+      // Visual feedback
+      const originalText = li.textContent;
+      li.textContent = `${originalText} (Đang xử lý...)`;
+      li.style.color = "#888";
+      li.style.cursor = "not-allowed";
+      doctorList.style.pointerEvents = "none"; // Disable all list items
+
       await assignDoctor(selectedAppointmentId, doctor.id);
+      
+      // Cleanup (though renderAppointments will likely blow this away)
       modal.style.display = "none";
+      doctorList.style.pointerEvents = "auto";
+      isAssigning = false;
+      
       await renderAppointments();
     });
     doctorList.appendChild(li);
@@ -89,9 +112,31 @@ function showDoctorModal() {
   modal.style.display = "block";
 }
 
-// Assign doctor to appointment
+// Assign doctor to appointment via Backend API (to trigger Google Calendar)
 async function assignDoctor(appointmentId, doctorId) {
-  await updateDoc(doc(db, "appointments", appointmentId), { doctorID: doctorId });
+  try {
+    // Assuming backend is running on localhost:5000
+    // In production, replace this with the actual backend URL
+    const response = await fetch("http://localhost:5000/assign-doctor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ appointmentId, doctorId })
+    });
+
+    const result = await response.json();
+    
+    if (response.ok) {
+      alert(result.message);
+    } else {
+      console.error("Server error:", result);
+      alert("Lỗi khi gán bác sĩ: " + (result.message || "Unknown error"));
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    alert("Không thể kết nối tới server. Vui lòng kiểm tra backend.");
+  }
 }
 
 // Close modal via both close buttons

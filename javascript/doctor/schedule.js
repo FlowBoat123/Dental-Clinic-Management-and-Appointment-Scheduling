@@ -11,9 +11,49 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalTime = document.getElementById("modal-time");
   const modalService = document.getElementById("modal-service");
   const modalNotes = document.getElementById("modal-notes");
+  const syncBtn = document.getElementById("sync-calendar-btn");
 
   let today = new Date();
   const doctorId = localStorage.getItem("doctorId");
+
+  // Sync Calendar Event
+  if (syncBtn) {
+    syncBtn.addEventListener("click", async function() {
+      if (!doctorId) {
+        alert("Không tìm thấy thông tin bác sĩ. Vui lòng đăng nhập lại.");
+        return;
+      }
+
+      if (!confirm("Bạn có muốn đồng bộ các lịch hẹn sắp tới lên Google Calendar của email đăng ký không?")) {
+        return;
+      }
+
+      try {
+        syncBtn.disabled = true;
+        syncBtn.textContent = "Đang đồng bộ...";
+
+        const response = await fetch("http://localhost:5000/api/doctor/sync-calendar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ doctorId: doctorId })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert(result.message);
+        } else {
+          alert("Lỗi: " + result.message);
+        }
+      } catch (error) {
+        console.error("Sync error:", error);
+        alert("Lỗi kết nối tới server.");
+      } finally {
+        syncBtn.disabled = false;
+        syncBtn.textContent = "Đồng bộ Google Calendar";
+      }
+    });
+  }
 
   // Utility function to format date
   function formatDateToISO(dateInput) {

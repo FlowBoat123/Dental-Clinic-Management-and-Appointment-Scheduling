@@ -1,4 +1,3 @@
-
 /* ================= RESET & CHUNG ================= */
 * {
   margin: 0;
@@ -188,6 +187,57 @@ textarea {
 
 .button-group button:hover {
   opacity: 0.8;
+}
+
+/* ================= LIÊN KẾT TÀI KHOẢN ================= */
+.integration-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.integration-item p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+.google-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .2s, box-shadow .2s;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  max-width: 250px;
+}
+
+.google-btn:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+  color: #202124;
+}
+
+.google-btn:active {
+  background-color: #f1f3f4;
+  box-shadow: none;
+}
+
+.google-btn img {
+  margin-right: 12px;
+}
+
+#calendar-status {
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
 }
 
 /* ================= RESPONSIVE ================= */

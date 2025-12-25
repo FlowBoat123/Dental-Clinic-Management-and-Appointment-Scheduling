@@ -11,6 +11,14 @@ from sendgrid.helpers.mail import Mail
 import secrets
 import string
 import json
+from flask import redirect, url_for
+from service.calendar.google_calendar_service import (
+    create_calendar_event, 
+    delete_calendar_event,
+    get_auth_url, 
+    exchange_code_for_credentials, 
+    credentials_to_dict
+)
 
 load_dotenv()
 
@@ -24,6 +32,9 @@ logging.info("Flask logging setup completed!")
 
 app = Flask(__name__)
 CORS(app)  # Cho phép cross-origin requests
+
+# URL cơ sở cho OAuth callback (thay đổi khi deploy)
+BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
 
 # ====================== DEEPSEEK API CONFIG ======================
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
@@ -531,6 +542,234 @@ def confirm_appointment():
         </body>
         </html>
         """, 500
+
+# ====================== GOOGLE OAUTH ROUTES ======================
+
+@app.route('/auth/google')
+def google_auth():
+    """Bắt đầu flow OAuth2. Redirect user tới Google Consent Screen."""
+    doctor_id = request.args.get('doctorId')
+    if not doctor_id:
+        return "Thiếu parameter doctorId", 400
+    
+    # State parameter dùng để truyền doctorId qua callback
+    redirect_uri = f"{BASE_URL}/oauth2callback"
+    try:
+        auth_url = get_auth_url(redirect_uri, state=doctor_id)
+        return redirect(auth_url)
+    except FileNotFoundError as e:
+        return f"Lỗi cấu hình server: {str(e)}", 500
+
+@app.route('/oauth2callback')
+def oauth2callback():
+    """Xử lý callback từ Google. Lưu token vào Firestore."""
+    code = request.args.get('code')
+    doctor_id = request.args.get('state') # Lấy lại doctorId từ state
+    
+    if not code or not doctor_id:
+        return "Thiếu code hoặc doctorId trong callback", 400
+
+    redirect_uri = f"{BASE_URL}/oauth2callback"
+    
+    try:
+        credentials = exchange_code_for_credentials(code, redirect_uri)
+        token_dict = credentials_to_dict(credentials)
+        
+        # Lưu token vào Firestore của bác sĩ
+        db.collection("doctors").document(doctor_id).update({
+            "google_token": token_dict,
+            "google_calendar_linked": True,
+            "google_calendar_linked_at": datetime.now().isoformat()
+        })
+        
+        return """
+        <html>
+        <head><title>Kết nối thành công</title></head>
+        <body style="font-family: Arial; text-align: center; margin-top: 50px;">
+            <h1 style="color: #4CAF50;">✅ Kết nối Google Calendar thành công!</h1>
+            <p>Bạn có thể đóng cửa sổ này và quay lại ứng dụng.</p>
+            <script>setTimeout(function(){ window.close(); }, 3000);</script>
+        </body>
+        </html>
+        """
+    except Exception as e:
+        logging.error(f"❌ OAuth Error: {str(e)}")
+        return f"Lỗi kết nối: {str(e)}", 500
+
+
+@app.route('/assign-doctor', methods=['POST'])
+def assign_doctor():
+    """
+    Endpoint để admin gán bác sĩ cho lịch hẹn.
+    """
+    try:
+        data = request.get_json()
+        appointment_id = data.get('appointmentId')
+        doctor_id = data.get('doctorId')
+
+        if not appointment_id or not doctor_id:
+            return jsonify({"status": "error", "message": "Thiếu appointmentId hoặc doctorId"}), 400
+
+        # 1. Lấy thông tin cuộc hẹn
+        doc_ref = db.collection("appointments").document(appointment_id)
+        doc_snapshot = doc_ref.get()
+
+        if not doc_snapshot.exists:
+            return jsonify({"status": "error", "message": "Không tìm thấy cuộc hẹn"}), 404
+
+        appointment_data = doc_snapshot.to_dict()
+
+        # Check if doctor is already assigned
+        old_doctor_id = appointment_data.get('doctorID')
+        if old_doctor_id == doctor_id:
+            return jsonify({
+                "status": "success", 
+                "message": "Bác sĩ này đang đảm nhận cuộc hẹn này rồi."
+            }), 200
+
+        # Check for previous doctor and remove event
+        google_event_id = appointment_data.get('googleEventId')
+
+        if old_doctor_id and old_doctor_id != doctor_id and google_event_id:
+            logging.info(f"🔄 Re-assigning from doctor {old_doctor_id} to {doctor_id}. Removing old calendar event...")
+            try:
+                old_doctor_ref = db.collection("doctors").document(old_doctor_id)
+                old_doctor_snap = old_doctor_ref.get()
+                if old_doctor_snap.exists:
+                    old_token = old_doctor_snap.to_dict().get('google_token')
+                    if old_token:
+                        logging.info(f"Calling delete_calendar_event for event {google_event_id}")
+                        result = delete_calendar_event(google_event_id, old_token)
+                        logging.info(f"delete_calendar_event result: {result}")
+                    else:
+                        logging.warning(f"Old doctor {old_doctor_id} has no google_token. Cannot delete event.")
+                else:
+                    logging.warning(f"Old doctor {old_doctor_id} not found in DB.")
+            except Exception as e:
+                logging.error(f"⚠️ Failed to remove event from old doctor's calendar: {e}")
+
+        # 2. Cập nhật doctorID vào Firestore
+        doc_ref.update({"doctorID": doctor_id})
+        logging.info(f"✅ Đã gán bác sĩ {doctor_id} cho cuộc hẹn {appointment_id}")
+
+        # 3. Lấy Google Token của bác sĩ
+        doctor_ref = db.collection("doctors").document(doctor_id)
+        doctor_snapshot = doctor_ref.get()
+        token_info = None
+        
+        if doctor_snapshot.exists:
+            doctor_data = doctor_snapshot.to_dict()
+            token_info = doctor_data.get('google_token')
+        
+        message = "Đã gán bác sĩ thành công."
+        calendar_link = None
+        
+        if token_info:
+            # 4. Tạo sự kiện Google Calendar
+            event_result = create_calendar_event(appointment_data, token_info)
+            
+            if event_result:
+                calendar_link = event_result.get('link')
+                doc_ref.update({"googleEventId": event_result.get('id')})
+                message += " Đã tạo lịch trên Google Calendar."
+            else:
+                message += " Tuy nhiên, không thể tạo lịch trên Google Calendar (Token có thể hết hạn hoặc lỗi)."
+        else:
+            message += " Bác sĩ chưa liên kết Google Calendar."
+
+        return jsonify({
+            "status": "success",
+            "message": message,
+            "calendarLink": calendar_link
+        }), 200
+
+    except Exception as e:
+        logging.error(f"❌ Lỗi trong assign_doctor: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/doctor/sync-calendar', methods=['POST'])
+def sync_doctor_calendar():
+    """
+    Endpoint cho Bác sĩ tự đồng bộ lịch.
+    """
+    try:
+        data = request.get_json()
+        doctor_id = data.get('doctorId')
+        logging.info(f"🔄 Bắt đầu đồng bộ lịch cho bác sĩ: {doctor_id}")
+
+        if not doctor_id:
+            return jsonify({"status": "error", "message": "Thiếu doctorId"}), 400
+
+        # 1. Lấy Token
+        doctor_ref = db.collection("doctors").document(doctor_id)
+        doctor_snap = doctor_ref.get()
+        if not doctor_snap.exists:
+             return jsonify({"status": "error", "message": "Không tìm thấy bác sĩ"}), 404
+        
+        token_info = doctor_snap.to_dict().get('google_token')
+        if not token_info:
+            logging.warning(f"⚠️ Bác sĩ {doctor_id} chưa có token.")
+            return jsonify({"status": "error", "message": "Bạn chưa liên kết Google Calendar. Vui lòng vào Cài đặt để liên kết."}), 400
+
+        # 2. Lấy các cuộc hẹn
+        appointments_ref = db.collection("appointments")
+        query = appointments_ref.where("doctorID", "==", doctor_id).stream()
+        
+        count = 0
+        errors = 0
+        skipped_date = 0
+        skipped_exists = 0
+        
+        current_date_str = datetime.now().strftime("%Y-%m-%d")
+        logging.info(f"📅 Ngày hiện tại: {current_date_str}")
+
+        for doc in query:
+            appt_data = doc.to_dict()
+            appt_id = doc.id
+            appt_date = appt_data.get('date')
+            
+            # Chỉ xử lý các cuộc hẹn từ hôm nay trở đi
+            if appt_date < current_date_str:
+                skipped_date += 1
+                continue
+
+            # Nếu đã có googleEventId thì bỏ qua (tránh trùng)
+            if appt_data.get('googleEventId'):
+                skipped_exists += 1
+                continue
+
+            logging.info(f"⚡ Đang đồng bộ cuộc hẹn: {appt_id} - {appt_date} {appt_data.get('time')}")
+            
+            # Tạo sự kiện
+            event_result = create_calendar_event(appt_data, token_info)
+            
+            if event_result:
+                db.collection("appointments").document(appt_id).update({
+                    "googleEventId": event_result.get('id')
+                })
+                count += 1
+                logging.info(f"✅ Đồng bộ thành công: {appt_id}")
+            else:
+                errors += 1
+                logging.error(f"❌ Đồng bộ thất bại: {appt_id}")
+
+        logging.info(f"🏁 Kết quả đồng bộ: Thành công={count}, Lỗi={errors}, Bỏ qua (Qúa khứ)={skipped_date}, Bỏ qua (Đã có)={skipped_exists}")
+
+        return jsonify({
+            "status": "success",
+            "message": f"Đã đồng bộ thành công {count} lịch hẹn. Lỗi: {errors}. (Bỏ qua {skipped_date + skipped_exists} lịch cũ/trùng)",
+            "syncedCount": count,
+            "details": {
+                "success": count,
+                "errors": errors,
+                "skipped_past": skipped_date,
+                "skipped_exists": skipped_exists
+            }
+        }), 200
+
+    except Exception as e:
+        logging.error(f"❌ Lỗi trong sync_doctor_calendar: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

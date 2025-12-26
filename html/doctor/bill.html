@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tạo hóa đơn</title>
+    <link rel="stylesheet" href="../../css/doctor/bill.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <h2>Quản lý lịch</h2>
+        <ul>
+          <li>
+            <a href="index.html">
+              <img src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png" class="sidebar-icon" />
+              Trang chủ
+            </a>
+          </li>
+          <li>
+            <a href="schedule.html" class="active">
+              <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="sidebar-icon" />
+              Lịch làm việc
+            </a>
+          </li>
+          <li>
+            <a href="settings.html">
+              <img src="https://cdn-icons-png.flaticon.com/512/126/126472.png" class="sidebar-icon" />
+              Cài đặt
+            </a>
+          </li>
+          <li>
+            <a href="logout.html">
+              <img src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png" class="sidebar-icon" />
+              Đăng xuất
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main content -->
+      <div class="main-content">
+        <h1>Hoàn thành cuộc hẹn & Tạo hóa đơn</h1>
+        
+        <div class="billing-container">
+            <div id="loading-message">Đang tải thông tin...</div>
+            
+            <div id="billing-form" style="display: none;">
+                <div class="patient-info">
+                    <h3>Thông tin bệnh nhân</h3>
+                    <p><strong>Tên:</strong> <span id="patient-name"></span></p>
+                    <p><strong>Dịch vụ đã đặt:</strong> <span id="booked-service"></span></p>
+                    <p><strong>Ghi chú:</strong> <span id="appt-note"></span></p>
+                </div>
+
+                <h3>Chọn dịch vụ thực hiện:</h3>
+                <div class="services-table-container">
+                    <table class="services-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Chọn</th>
+                                <th>Tên dịch vụ</th>
+                                <th>Đơn vị</th>
+                                <th>Đơn giá (VND)</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-tbody">
+                            <!-- Rows will be populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="total-section">
+                    Tổng cộng: <span id="total-amount" class="total-amount">0</span> VND
+                </div>
+
+                <div class="actions">
+                    <button id="cancel-btn" class="btn btn-secondary">Hủy bỏ</button>
+                    <button id="submit-btn" class="btn btn-primary">Xác nhận & Lưu hóa đơn</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../../javascript/doctor/bill.js"></script>
+  </body>
+</html>

@@ -19,6 +19,7 @@ from service.calendar.google_calendar_service import (
     exchange_code_for_credentials, 
     credentials_to_dict
 )
+from service.dental_service.dental_service import get_services
 
 load_dotenv()
 
@@ -769,6 +770,126 @@ def sync_doctor_calendar():
 
     except Exception as e:
         logging.error(f"❌ Lỗi trong sync_doctor_calendar: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/services', methods=['GET'])
+def get_dental_services():
+    """
+    Endpoint để lấy danh sách dịch vụ nha khoa từ Firestore.
+    """
+    try:
+        services = get_services(db)
+        return jsonify({
+            "status": "success",
+            "data": services,
+            "count": len(services)
+        }), 200
+    except Exception as e:
+        logging.error(f"❌ Lỗi khi lấy danh sách dịch vụ: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/doctor/complete-appointment', methods=['POST'])
+def complete_appointment():
+    """
+    Endpoint để bác sĩ hoàn thành cuộc hẹn và tạo hóa đơn.
+    Body: {
+        "appointmentId": "...",
+        "doctorId": "...",
+        "services": [
+            {"id": "1", "quantity": 1},
+            {"id": "4", "quantity": 2}
+        ]
+    }
+    """
+    try:
+        data = request.get_json()
+        appointment_id = data.get('appointmentId')
+        doctor_id = data.get('doctorId')
+        selected_services = data.get('services', []) # List of {id, quantity}
+
+        if not appointment_id or not doctor_id:
+            return jsonify({"status": "error", "message": "Thiếu thông tin appointmentId hoặc doctorId"}), 400
+
+        # 1. Fetch Appointment to verify
+        appt_ref = db.collection("appointments").document(appointment_id)
+        appt_snap = appt_ref.get()
+        
+        if not appt_snap.exists:
+            return jsonify({"status": "error", "message": "Không tìm thấy cuộc hẹn"}), 404
+        
+        appt_data = appt_snap.to_dict()
+        
+        # Verify doctor (Optional but recommended)
+        if appt_data.get('doctorID') != doctor_id:
+             return jsonify({"status": "error", "message": "Bạn không phải là bác sĩ phụ trách cuộc hẹn này"}), 403
+
+        # 2. Fetch all services to get current prices
+        all_services = get_services(db)
+        service_map = {str(s['id']): s for s in all_services}
+
+        # 3. Calculate Bill Details
+        bill_items = []
+        total_amount = 0
+
+        for item in selected_services:
+            s_id = str(item.get('id'))
+            qty = int(item.get('quantity', 1))
+            
+            if s_id in service_map:
+                service_info = service_map[s_id]
+                unit_price = service_info['price']
+                item_total = unit_price * qty
+                
+                bill_items.append({
+                    "serviceId": s_id,
+                    "serviceName": service_info['name'],
+                    "unit": service_info['unit'],
+                    "quantity": qty,
+                    "unitPrice": unit_price,
+                    "total": item_total
+                })
+                total_amount += item_total
+            else:
+                logging.warning(f"Service ID {s_id} not found in database. Skipping.")
+
+        # 4. Create Bill & Update Appointment
+        batch = db.batch()
+        
+        # Update Appointment Status
+        batch.update(appt_ref, {
+            "status": "completed", 
+            "completedAt": datetime.now().isoformat()
+        })
+
+        # Create Bill Document
+        bill_ref = db.collection("bills").document() # Auto ID
+        bill_data = {
+            "appointmentId": appointment_id,
+            "patientName": appt_data.get('patientName'),
+            "patientPhone": appt_data.get('phone') or appt_data.get('sdt'), # Handle inconsistent naming
+            "doctorId": doctor_id,
+            "items": bill_items,
+            "totalAmount": total_amount,
+            "status": "pending_payment",
+            "createdAt": datetime.now().isoformat()
+        }
+        batch.set(bill_ref, bill_data)
+
+        batch.commit()
+        
+        logging.info(f"✅ Created bill {bill_ref.id} for appointment {appointment_id}. Total: {total_amount}")
+
+        return jsonify({
+            "status": "success",
+            "message": "Đã hoàn thành cuộc hẹn và tạo hóa đơn thành công.",
+            "billId": bill_ref.id
+        }), 200
+
+    except Exception as e:
+        logging.error(f"❌ Lỗi trong complete_appointment: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':

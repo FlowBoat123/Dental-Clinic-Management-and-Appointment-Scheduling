@@ -11,7 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalTime = document.getElementById("modal-time");
   const modalService = document.getElementById("modal-service");
   const modalNotes = document.getElementById("modal-notes");
+  const completeApptBtn = document.getElementById("complete-appt-btn");
   const syncBtn = document.getElementById("sync-calendar-btn");
+
+  let currentAppointment = null; // Store current appointment for billing
 
   let today = new Date();
   const doctorId = localStorage.getItem("doctorId");
@@ -55,6 +58,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // --- BILLING LOGIC START ---
+
+  completeApptBtn.addEventListener("click", function() {
+    if (!currentAppointment) return;
+    if (!currentAppointment.id) {
+        alert("Lỗi: Không tìm thấy ID cuộc hẹn.");
+        return;
+    }
+    // Redirect to separate billing page
+    window.location.href = `bill.html?appointmentId=${currentAppointment.id}`;
+  });
+
+  // --- BILLING LOGIC END ---
+
+
   // Utility function to format date
   function formatDateToISO(dateInput) {
     const date = new Date(dateInput);
@@ -75,7 +93,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const querySnapshot = await getDocs(q);
     let appointments = [];
     querySnapshot.forEach((doc) => {
-      appointments.push(doc.data());
+        // IMPORTANT: Include doc.id so we can use it for updates
+        let data = doc.data();
+        data.id = doc.id; 
+        appointments.push(data);
     });
     return appointments;
   }
@@ -107,6 +128,9 @@ document.addEventListener("DOMContentLoaded", function () {
     slots.forEach(slot => {
       const col = parseInt(slot.getAttribute("data-col"));
       const time = slot.getAttribute("data-time");
+      slot.innerHTML = ""; // Clear previous content
+      slot.classList.remove("has-appointment");
+      slot.removeAttribute("data-booked");
 
       if (!time || !/^\d{2}:\d{2}$/.test(time)) {
         console.warn("Time format invalid:", time);
@@ -119,20 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const hour = parseInt(hourStr);
       const minute = parseInt(minuteStr);
 
-      // Ensure hour and minute are valid
-      if (isNaN(hour) || isNaN(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-        console.warn("Invalid hour or minute:", hourStr, minuteStr);
-        return;
-      }
-
       date.setHours(hour);
       date.setMinutes(minute);
-
-      // Check if date is valid after setting the time
-      // if (isNaN(date.getTime())) {
-      //   console.warn("Date is invalid after setting time:", date);
-      //   return;
-      // }
 
       const isoDate = date.toISOString().slice(0, 10); // yyyy-mm-dd
       slot.setAttribute("data-date", isoDate);
@@ -142,35 +154,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Display booked slots
     appointments.forEach((appointment) => {
-      const date = appointment.date; // yyyy-mm-dd (from Firestore)
-      const time = appointment.time; // hh:mm
+      const date = appointment.date; 
+      const time = appointment.time; 
     
-      // Convert string date into Date object
-      const appointmentDate = parseFirebaseDate(date);  // Use parseFirebaseDate function
+      const appointmentDate = parseFirebaseDate(date);
     
-      // Ensure valid date object
       if (isNaN(appointmentDate)) {
-        console.warn("Invalid appointment date:", date);
         return;
       }
     
-      // Find slot by date and time
       const slot = document.querySelector(`.time-slot[data-date="${date}"][data-time="${time}"]`);
       if (slot) {
-        // Thêm class `has-appointment` thay vì `booked`
         slot.classList.add("has-appointment");
         slot.setAttribute("data-booked", "true");
+        
+        let statusBadge = "";
+        if (appointment.status === "completed") {
+            statusBadge = "<br><span style='color: green; font-weight: bold;'>[Hoàn thành]</span>";
+        }
+        
         slot.innerHTML = `
           <span class="appointment-details">
             <strong>${appointment.patientName}</strong><br>
-            ${appointment.service}<br>
-            ${appointment.note}
+            ${appointment.service}
+            ${statusBadge}
           </span>`;
       }
     });
     
     // Add click event to open modal
     slots.forEach(slot => {
+      // Remove old listeners to prevent duplicates (though forEach on fresh querySelectorAll helps)
+      // Best practice: use event delegation on table, but keeping this simple for now.
+      
       slot.addEventListener("click", function () {
         const slotDate = slot.getAttribute("data-date");
         const slotTime = slot.getAttribute("data-time");
@@ -178,17 +194,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const appointment = appointments.find(
           (a) => a.date === slotDate && a.time === slotTime
         );
-    
+        
+        currentAppointment = appointment; // Set global current appointment
+
         if (appointment) {
           modalName.textContent = appointment.patientName;
           modalTime.textContent = `${appointment.time} - Ngày: ${appointment.date ? displayDateVN(appointment.date) : 'Chưa có ngày'}`;
           modalService.textContent = appointment.service;
-          modalNotes.textContent = appointment.note;
+          modalNotes.textContent = appointment.note || "Không có";
+          
+          // Logic for Complete Button
+          if (appointment.status === "completed") {
+              completeApptBtn.style.display = "none";
+              modalName.innerHTML = `${appointment.patientName} <span style="color:green">(Đã hoàn thành)</span>`;
+          } else {
+              completeApptBtn.style.display = "block";
+          }
+
         } else {
+          currentAppointment = null;
           modalName.textContent = "Chưa có lịch hẹn";
           modalTime.textContent = `${slotTime} - Ngày: ${slotDate ? displayDateVN(slotDate) : 'Chưa có ngày'}`;
           modalService.textContent = "Chưa có thông tin";
           modalNotes.textContent = "Chưa có ghi chú";
+          completeApptBtn.style.display = "none";
         }
     
         modal.style.display = "block";
@@ -198,12 +227,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   closeModal.addEventListener("click", function () {
     modal.style.display = "none";
-  });
-
-  window.addEventListener("click", function (event) {
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
   });
 
   function formatDateDisplay(date) {

@@ -1,0 +1,221 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  margin: 0;
+  background-color: #f9f9f9;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #126da6; /* Màu xanh navy đậm */
+  padding: 20px;
+  height: 100vh;
+  color: white;
+  position: fixed; /* Fix sidebar to left */
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar ul li:hover {
+  background-color: #1976d2; /* Màu xanh sáng khi hover */
+}
+
+.sidebar ul li.active {
+  background-color: #2a95bf; /* Màu xanh sáng hơn cho mục đang chọn */
+}
+
+.sidebar ul li i {
+  font-size: 18px;
+  color: white;
+}
+
+.sidebar ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 260px; /* Adjust for fixed sidebar */
+  min-height: 100vh;
+}
+
+h1 {
+  color: #333; /* Màu phụ cho tiêu đề */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* --- Controls Section (Search & Filter) --- */
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically align items */
+    gap: 20px; /* Use gap instead of margins */
+    margin-bottom: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.search-box {
+    flex: 1; /* Take up remaining space */
+    position: relative;
+    /* Removed margin-right */
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.filter-box {
+    /* Removed flex: 1 and margin-left */
+    min-width: 200px; /* Ensure minimum width */
+}
+
+.filter-box select {
+    width: 100%; /* Fill the container */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background: white;
+}
+
+/* --- Table --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+th {
+  background: #2a95bf; /* Màu chính đồng nhất */
+  color: white;
+}
+
+td {
+  font-size: 16px;
+  color: #34495e;
+}
+
+.btn {
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  color: white;
+}
+
+.btn-paid {
+  background-color: #27ae60;
+}
+
+.btn-paid:hover {
+  background-color: #2ecc71;
+}
+
+.btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.status-paid {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #e67e22;
+  font-weight: bold;
+}
+
+/* --- Pagination --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #e9ecef;
+}
+
+.pagination button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: bold;
+  color: #555;
+}

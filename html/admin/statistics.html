@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thống kê Doanh thu</title>
+    <link rel="stylesheet" href="../../css/admin/statistics.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>ADMIN</h2>
+      <ul>
+        <li><i class="fas fa-home"></i><a href="home.html">Trang chủ</a></li>
+        <li>
+          <i class="fas fa-user-md"></i
+          ><a href="doctor-management.html">Quản lý bác sĩ</a>
+        </li>
+        <li>
+          <i class="fas fa-file-invoice-dollar"></i
+          ><a href="payment.html">Thanh toán</a>
+        </li>
+        <li class="active">
+          <i class="fas fa-chart-line"></i
+          ><a href="statistics.html">Thống kê</a>
+        </li>
+        <li><i class="fas fa-cog"></i><a href="settings.html">Cài đặt</a></li>
+        <li>
+          <i class="fas fa-sign-out-alt"></i><a href="logout.html">Đăng xuất</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <h1>Thống Kê Doanh Thu</h1>
+
+      <!-- Filter -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="month-select">Tháng:</label>
+          <select id="month-select">
+            <!-- Months will be populated by JS -->
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="year-select">Năm:</label>
+          <select id="year-select">
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025" selected>2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </div>
+        <button
+          id="refresh-btn"
+          style="
+            margin-left: auto;
+            padding: 8px 15px;
+            background: #2a95bf;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          "
+        >
+          <i class="fas fa-sync-alt"></i> Làm mới
+        </button>
+      </div>
+
+      <!-- Dashboard Cards -->
+      <div class="dashboard-cards">
+        <div class="card">
+          <h3>Tổng Doanh Thu (Tháng)</h3>
+          <div class="value" id="total-month-revenue">0 VND</div>
+          <div class="sub-text" id="month-label">...</div>
+        </div>
+        <div class="card">
+          <h3>Số Hóa Đơn</h3>
+          <div class="value" id="total-bills-count">0</div>
+          <div class="sub-text">Đã thanh toán</div>
+        </div>
+        <div class="card">
+          <h3>Bác sĩ xuất sắc</h3>
+          <div class="value" id="top-doctor-name" style="font-size: 20px">
+            -
+          </div>
+          <div class="sub-text" id="top-doctor-revenue">-</div>
+        </div>
+      </div>
+
+      <!-- Doctor Stats Table -->
+      <h2 class="section-title">Doanh thu theo Bác sĩ</h2>
+      <table id="doctor-stats-table">
+        <thead>
+          <tr>
+            <th>Hạng</th>
+            <th>Bác sĩ</th>
+            <th>Số ca</th>
+            <th>Doanh thu (VND)</th>
+            <th>Tỉ trọng</th>
+          </tr>
+        </thead>
+        <tbody id="doctor-stats-body">
+          <!-- Data -->
+        </tbody>
+      </table>
+
+      <!-- Monthly Trend Table (Year View) -->
+      <h2 class="section-title">
+        Chi tiết các tháng trong năm <span id="year-label">2025</span>
+      </h2>
+      <table id="monthly-stats-table">
+        <thead>
+          <tr>
+            <th>Tháng</th>
+            <th>Số hóa đơn</th>
+            <th>Tổng doanh thu (VND)</th>
+          </tr>
+        </thead>
+        <tbody id="monthly-stats-body">
+          <!-- Data -->
+        </tbody>
+      </table>
+    </div>
+
+    <script type="module" src="../../javascript/admin/statistics.js"></script>
+  </body>
+</html>

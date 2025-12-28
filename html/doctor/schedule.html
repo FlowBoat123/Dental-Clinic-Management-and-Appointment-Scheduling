@@ -64,6 +64,20 @@
             <button id="prev-week"></button>
             <h2 id="week-title">Tuần này</h2>
             <button id="next-week"></button>
+            <button
+              id="sync-calendar-btn"
+              style="
+                margin-left: auto;
+                padding: 8px 12px;
+                background: #4285f4;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+              "
+            >
+              Đồng bộ Google Calendar
+            </button>
           </div>
           <table class="calendar-table">
             <thead>
@@ -81,105 +95,455 @@
             <tbody id="calendar-body">
               <tr>
                 <td>08:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="08:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="08:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="08:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="08:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="08:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="08:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="08:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="08:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="08:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="08:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="08:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="08:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="08:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="08:00"
+                ></td>
               </tr>
               <tr>
                 <td>09:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="09:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="09:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="09:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="09:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="09:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="09:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="09:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="09:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="09:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="09:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="09:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="09:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="09:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="09:00"
+                ></td>
               </tr>
               <tr>
                 <td>10:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="10:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="10:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="10:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="10:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="10:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="10:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="10:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="10:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="10:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="10:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="10:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="10:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="10:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="10:00"
+                ></td>
               </tr>
               <tr>
                 <td>11:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="11:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="11:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="11:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="11:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="11:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="11:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="11:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="11:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="11:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="11:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="11:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="11:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="11:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="11:00"
+                ></td>
               </tr>
               <tr>
                 <td>12:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="12:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="12:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="12:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="12:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="12:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="12:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="12:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="12:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="12:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="12:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="12:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="12:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="12:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="12:00"
+                ></td>
               </tr>
               <tr>
                 <td>13:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="13:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="13:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="13:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="13:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="13:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="13:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="13:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="13:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="13:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="13:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="13:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="13:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="13:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="13:00"
+                ></td>
               </tr>
               <tr>
                 <td>14:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="14:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="14:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="14:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="14:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="14:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="14:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="14:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="14:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="14:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="14:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="14:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="14:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="14:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="14:00"
+                ></td>
               </tr>
               <tr>
                 <td>15:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="15:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="15:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="15:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="15:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="15:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="15:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="15:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="15:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="15:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="15:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="15:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="15:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="15:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="15:00"
+                ></td>
               </tr>
               <tr>
                 <td>16:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="16:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="16:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="16:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="16:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="16:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="16:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="16:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="16:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="16:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="16:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="16:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="16:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="16:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="16:00"
+                ></td>
               </tr>
               <tr>
                 <td>17:00</td>
-                <td class="time-slot" data-col="0" data-day="Thứ Hai" data-time="17:00"></td>
-                <td class="time-slot" data-col="1" data-day="Thứ Ba" data-time="17:00"></td>
-                <td class="time-slot" data-col="2" data-day="Thứ Tư" data-time="17:00"></td>
-                <td class="time-slot" data-col="3" data-day="Thứ Năm" data-time="17:00"></td>
-                <td class="time-slot" data-col="4" data-day="Thứ Sáu" data-time="17:00"></td>
-                <td class="time-slot" data-col="5" data-day="Thứ Bảy" data-time="17:00"></td>
-                <td class="time-slot" data-col="6" data-day="Chủ Nhật" data-time="17:00"></td>
+                <td
+                  class="time-slot"
+                  data-col="0"
+                  data-day="Thứ Hai"
+                  data-time="17:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="1"
+                  data-day="Thứ Ba"
+                  data-time="17:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="2"
+                  data-day="Thứ Tư"
+                  data-time="17:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="3"
+                  data-day="Thứ Năm"
+                  data-time="17:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="4"
+                  data-day="Thứ Sáu"
+                  data-time="17:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="5"
+                  data-day="Thứ Bảy"
+                  data-time="17:00"
+                ></td>
+                <td
+                  class="time-slot"
+                  data-col="6"
+                  data-day="Chủ Nhật"
+                  data-time="17:00"
+                ></td>
               </tr>
-            </tbody>            
+            </tbody>
           </table>
         </div>
       </div>
@@ -190,10 +554,36 @@
       <div class="modal-content">
         <span class="close">&times;</span>
         <h3>Chi tiết lịch hẹn</h3>
-        <p><strong>Tên:</strong> <span id="modal-name">Chưa có thông tin</span></p>
-        <p><strong>Thời gian:</strong> <span id="modal-time">Chưa có thông tin</span></p>
-        <p><strong>Dịch vụ:</strong> <span id="modal-service">Chưa có thông tin</span></p>
-        <p><strong>Ghi chú:</strong> <span id="modal-notes">Chưa có thông tin</span></p>
+        <p>
+          <strong>Tên:</strong> <span id="modal-name">Chưa có thông tin</span>
+        </p>
+        <p>
+          <strong>Thời gian:</strong>
+          <span id="modal-time">Chưa có thông tin</span>
+        </p>
+        <p>
+          <strong>Dịch vụ:</strong>
+          <span id="modal-service">Chưa có thông tin</span>
+        </p>
+        <p>
+          <strong>Ghi chú:</strong>
+          <span id="modal-notes">Chưa có thông tin</span>
+        </p>
+        <button
+          id="complete-appt-btn"
+          style="
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none;
+          "
+        >
+          Hoàn thành
+        </button>
       </div>
     </div>
 

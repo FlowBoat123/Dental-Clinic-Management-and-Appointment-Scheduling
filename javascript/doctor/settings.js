@@ -37,6 +37,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         dobInput.value = convertToISODate(data.birthdate || "2000-01-01");
         emailInput.value = data.email || "";
         phoneInput.value = data.phone || "";
+
+        // Check Google Calendar Link Status
+        const calendarStatus = document.getElementById("calendar-status");
+        if (data.google_calendar_linked) {
+            calendarStatus.textContent = "✅ Đã kết nối";
+            calendarStatus.style.color = "green";
+            document.getElementById("link-calendar-btn").textContent = "Kết nối lại";
+        } else {
+            calendarStatus.textContent = "⚪ Chưa kết nối";
+        }
+
       } else {
         console.error("Không tìm thấy thông tin bác sĩ.");
       }
@@ -47,6 +58,26 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Gọi hàm điền trước dữ liệu
   await prefillDoctorInfo(doctorId);
+
+  // --- Xử lý Kết nối Google Calendar ---
+  const linkCalendarBtn = document.getElementById("link-calendar-btn");
+  if (linkCalendarBtn) {
+    linkCalendarBtn.addEventListener("click", function() {
+        if (!doctorId) return;
+        
+        // Mở popup để xác thực OAuth
+        const width = 500;
+        const height = 600;
+        const left = (window.screen.width / 2) - (width / 2);
+        const top = (window.screen.height / 2) - (height / 2);
+        
+        window.open(
+            `http://localhost:5000/auth/google?doctorId=${doctorId}`, 
+            "GoogleAuth", 
+            `width=${width},height=${height},top=${top},left=${left}`
+        );
+    });
+  }
 
   // --- Xử lý Submit Form ---
   settingsForm.addEventListener("submit", async function (e) {

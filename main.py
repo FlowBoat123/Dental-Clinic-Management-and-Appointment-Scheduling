@@ -36,7 +36,7 @@ if not DEEPSEEK_API_KEY:
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # ====================== EMAIL CONFIG ======================
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "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")
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 SENDGRID_FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL", "hienctcom@gmail.com")
 VERIFICATION_LINK_BASE = os.getenv("VERIFICATION_LINK_BASE", "http://localhost:5000")
 

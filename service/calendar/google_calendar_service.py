@@ -151,3 +151,28 @@ def delete_calendar_event(event_id, token_info):
     except Exception as e:
         logging.error(f"❌ Error deleting Google Calendar event: {str(e)}")
         return False
+
+def update_event_title(event_id, new_title, token_info):
+    """
+    Updates the summary (title) of a Google Calendar event.
+    
+    Args:
+        event_id (str): The Google Calendar Event ID.
+        new_title (str): The new title for the event.
+        token_info (dict): The stored OAuth2 token dictionary.
+        
+    Returns:
+        bool: True if successful, False otherwise.
+    """
+    service = get_calendar_service(token_info)
+    if not service:
+        return False
+
+    try:
+        event = {'summary': new_title}
+        service.events().patch(calendarId='primary', eventId=event_id, body=event).execute()
+        logging.info(f"✅ Google Calendar event updated: {event_id} -> {new_title}")
+        return True
+    except Exception as e:
+        logging.error(f"❌ Error updating Google Calendar event: {str(e)}")
+        return False

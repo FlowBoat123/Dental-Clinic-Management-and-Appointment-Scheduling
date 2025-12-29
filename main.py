@@ -15,6 +15,7 @@ from flask import redirect, url_for
 from service.calendar.google_calendar_service import (
     create_calendar_event, 
     delete_calendar_event,
+    update_event_title,
     get_auth_url, 
     exchange_code_for_credentials, 
     credentials_to_dict
@@ -933,6 +934,20 @@ def complete_appointment():
         batch.commit()
         
         logging.info(f"✅ Created bill {bill_ref.id} for appointment {appointment_id}. Total: {total_amount}")
+
+        # Update Google Calendar Event if exists
+        google_event_id = appt_data.get('googleEventId')
+        if google_event_id:
+            try:
+                doctor_doc = db.collection("doctors").document(doctor_id).get()
+                if doctor_doc.exists:
+                    token_info = doctor_doc.to_dict().get('google_token')
+                    if token_info:
+                        patient_name = appt_data.get('patientName', 'Bệnh nhân')
+                        new_title = f"[Đã hoàn thành] Khám nha khoa: {patient_name}"
+                        update_event_title(google_event_id, new_title, token_info)
+            except Exception as e:
+                logging.warning(f"⚠️ Could not update Google Calendar event: {e}")
 
         return jsonify({
             "status": "success",

@@ -69,6 +69,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       li.dataset.service = data.service;
       li.dataset.note = data.note;
 
+      const isCompleted = data.status === "completed";
+      if (isCompleted) {
+        li.classList.add("completed");
+      }
+
       li.innerHTML = `
         <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png"
              alt="Calendar Icon" class="appointment-icon" />
@@ -76,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           <div class="appointment-time">${data.time}</div>
           <div class="appointment-patient">${data.patientName}</div>
         </div>
+        ${isCompleted ? '<div class="appointment-status completed">Đã hoàn thành</div>' : ''}
       `;
       li.addEventListener("click", () => {
         const modal = document.getElementById("patientModal");

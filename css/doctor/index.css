@@ -229,3 +229,24 @@ h1 {
     width: 90%;
   }
 }
+
+/* ================= COMPLETED STATUS ================= */
+.appointment-item.completed {
+  background-color: #f0fff4; /* Light green background */
+  border-color: #2ecc71;
+}
+
+.appointment-status {
+  font-size: 0.9em;
+  font-weight: bold;
+  margin-left: auto;
+  padding: 5px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.appointment-status.completed {
+  color: #27ae60;
+  background-color: #e8f8f5;
+  border: 1px solid #2ecc71;
+}

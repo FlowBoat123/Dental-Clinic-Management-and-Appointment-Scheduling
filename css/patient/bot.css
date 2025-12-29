@@ -1,5 +1,12 @@
-body {
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
+}
+
+body {
     text-align: center;
     margin: 0;
     display: flex;
@@ -132,6 +139,7 @@ header {
   nav ul {
     list-style: none;
     display: flex;
+    align-items: center;
     gap: 30px; /* Tạo khoảng cách giữa các mục menu */
     padding: 0;
     margin: 0;

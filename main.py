@@ -63,11 +63,7 @@ def get_answer_from_deepseek(question):
             "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
         }
         
-        system_message = """Bạn là một chuyên gia nha khoa nói tiếng Việt. 
-Trả lời các câu hỏi về sức khỏe răng miệng, các bệnh nha khoa, phương pháp điều trị, 
-và các cách chăm sóc phòng ngừa. Hãy cung cấp thông tin chính xác, an toàn và hữu ích.
-
-Nếu câu hỏi không liên quan đến nha khoa, hãy lịch sự từ chối trả lời và gợi ý quay lại chủ đề nha khoa."""
+        system_message = "Bạn là trợ lý tư vấn nha khoa. Trả lời ngắn gọn 1 câu. Kết thúc bằng: 'Liên hệ phòng khám An Khánh: 0123456789 để được tư vấn chi tiết.'"
         
         payload = {
             "model": "deepseek-chat",
@@ -76,10 +72,10 @@ Nếu câu hỏi không liên quan đến nha khoa, hãy lịch sự từ chối
                 {"role": "user", "content": question}
             ],
             "temperature": 0.7,
-            "max_tokens": 500
+            "max_tokens": 200
         }
         
-        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=10)
+        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=4.5)
         response.raise_for_status()
         
         result = response.json()
@@ -89,11 +85,59 @@ Nếu câu hỏi không liên quan đến nha khoa, hãy lịch sự từ chối
             return answer
         else:
             logging.warning("⚠️  No choices in Deepseek response")
-            return "Xin lỗi, tôi không thể trả lời câu hỏi này. Vui lòng thử lại."
+            return "Xin lỗi, hệ thống đang bận. Vui lòng liên hệ 0123456789 để được tư vấn trực tiếp."
     
     except requests.Timeout:
         logging.error("❌ Deepseek API timeout")
-        return "Lỗi: Yêu cầu tới API đã hết thời gian. Vui lòng thử lại."
+        return "Hệ thống đang bận. Để được tư vấn nhanh, vui lòng liên hệ phòng khám An Khánh: 0123456789"
+    except requests.RequestException as e:
+        logging.error(f"❌ Deepseek API error: {str(e)}")
+        return "Hệ thống tạm thời gặp trục trặc. Vui lòng liên hệ phòng khám An Khánh: 0123456789 để được hỗ trợ trực tiếp."
+    except json.JSONDecodeError:
+        logging.error("❌ Invalid JSON response from Deepseek API")
+        return "Lỗi: Phản hồi từ API không hợp lệ."
+    except Exception as e:
+        logging.error(f"❌ Unexpected error in get_answer_from_deepseek: {str(e)}")
+        return f"Lỗi bất ngờ: {str(e)}"
+
+def get_clinic_info_from_deepseek(question):
+    """Gọi Deepseek API để trả lời câu hỏi về phòng khám An Khánh"""
+    try:
+        if not DEEPSEEK_API_KEY:
+            return "Lỗi: API key chưa được cấu hình. Vui lòng kiểm tra DEEPSEEK_API_KEY."
+        
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
+        }
+        
+        system_message = "Bạn là trợ lý phòng khám nha khoa An Khánh ở Hà Nội. Dịch vụ: niềng răng, răng sứ, Implant, nhổ răng khôn. 4 bác sĩ: Hiển, Duy, Đăng, Đức. Hotline: 0123456789. Trả lời ngắn gọn 1-2 câu."
+        
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": question}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 200
+        }
+        
+        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=4.5)
+        response.raise_for_status()
+        
+        result = response.json()
+        if result.get("choices") and len(result["choices"]) > 0:
+            answer = result["choices"][0]["message"]["content"]
+            logging.info(f"✅ Deepseek API response received for clinic info question: {question[:50]}...")
+            return answer
+        else:
+            logging.warning("⚠️  No choices in Deepseek response")
+            return "Phòng khám An Khánh - Hà Nội. Dịch vụ: niềng răng, răng sứ, Implant, nhổ răng khôn. 4 bác sĩ: Hiển, Duy, Đăng, Đức. Hotline: 0123456789"
+    
+    except requests.Timeout:
+        logging.error("❌ Deepseek API timeout")
+        return "Phòng khám An Khánh - Hà Nội. Dịch vụ: niềng răng, răng sứ, Implant, nhổ răng khôn. 4 bác sĩ: Hiển, Duy, Đăng, Đức. Hotline: 0123456789"
     except requests.RequestException as e:
         logging.error(f"❌ Deepseek API error: {str(e)}")
         return f"Lỗi: Không thể kết nối tới API. Chi tiết: {str(e)}"
@@ -101,7 +145,7 @@ Nếu câu hỏi không liên quan đến nha khoa, hãy lịch sự từ chối
         logging.error("❌ Invalid JSON response from Deepseek API")
         return "Lỗi: Phản hồi từ API không hợp lệ."
     except Exception as e:
-        logging.error(f"❌ Unexpected error in get_answer_from_deepseek: {str(e)}")
+        logging.error(f"❌ Unexpected error in get_clinic_info_from_deepseek: {str(e)}")
         return f"Lỗi bất ngờ: {str(e)}"
 
 def get_weather(location):
@@ -242,6 +286,10 @@ def handle_make_appointment(req):
         start_time = 9 * 60   # 9:00 sáng = 540 phút
         end_time = 17 * 60    # 17:00 chiều = 1020 phút
 
+        # Kiểm tra nếu giờ là 00:00 (chưa điền giờ cụ thể)
+        if hour_minutes == 0:
+            return {"fulfillmentText": "Vui lòng cho biết giờ bạn muốn đặt lịch (từ 9:00 sáng đến 17:00 chiều). Ví dụ: 9 giờ sáng, 14 giờ chiều, 17 giờ."}
+        
         if not (start_time <= hour_minutes <= end_time):
             return {"fulfillmentText": "Giờ đặt lịch phải từ 9:00 sáng đến 17:00 chiều. Vui lòng chọn lại giờ khác."}
 
@@ -308,6 +356,10 @@ def webhook():
     if intent == "dental_info":  # Intent hỏi thông tin nha khoa
         # Gọi Deepseek API để trả lời
         answer = get_answer_from_deepseek(question)
+        response = {"fulfillmentText": answer}
+    elif intent == "chatbot_info":  # Intent hỏi thông tin phòng khám
+        # Gọi Deepseek API với context về phòng khám An Khánh
+        answer = get_clinic_info_from_deepseek(question)
         response = {"fulfillmentText": answer}
     elif intent == "ask_weather":  # Intent hỏi thời tiết
         location = parameters.get('locate', '')  # Lấy tham số 'locate' từ Dialogflow
